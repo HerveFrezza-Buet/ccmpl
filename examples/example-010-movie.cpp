@@ -21,7 +21,7 @@ void fill_data(std::vector<double>& x, std::vector<double>& y, std::vector<doubl
   double ymin= -4;
   double ymax = 4 + 2*cos(time/10.);
   width = 50;
-  int height = 50;
+  unsigned int height = 50;
   depth = 1;
 
   auto outx = std::back_inserter(x);
@@ -49,16 +49,16 @@ void fill_data_rgb(std::vector<double>& x, std::vector<double>& y, std::vector<d
   double ymin= -4;
   double ymax = 4 + 2*cos(time/10.);
   width = 50;
-  int height = 50;
+  unsigned int height = 50;
   depth = 3;
 
   auto outx = std::back_inserter(x);
   auto outy = std::back_inserter(y);
   auto outz = std::back_inserter(z);
-  for(int i = 0 ; i < height ; ++i) {
+  for(unsigned int i = 0 ; i < height ; ++i) {
     double y = ymin + i/(height-1.) * (ymax - ymin);  
     *(outy++) = y;
-    for(int j = 0 ; j < width ; ++j) {
+    for(unsigned int j = 0 ; j < width ; ++j) {
       double x = xmin + j/(width-1.) * (xmax - xmin);
          
       if(i == 0) *(outx++) = x;
