@@ -89,7 +89,7 @@ int main(int argc, char* argv[]) {
   display()         = {-1.1, 1.1, -1.1, 1.1};                          
   display()         = ccmpl::show_tics(false,false); 
   display()         = "equal";                           
-  display()        += ccmpl::vectors("color='black',pivot='origin'", fill_vectors); update_pattern += '#'; 
+  display()        += ccmpl::vectors("color='black',pivot='tip'", fill_vectors); update_pattern += '#'; 
 
   if(generate_mode) {
     display.make_python(VIEW_FILE,false);  // no gui, we only generate a single pdf.
