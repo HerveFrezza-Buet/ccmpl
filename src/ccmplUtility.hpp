@@ -29,6 +29,7 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <iterator>
 
 namespace ccmpl {
 
@@ -42,4 +43,53 @@ namespace ccmpl {
   std::string nofile() {
     return "";
   }
+
+
+  class range {
+  private:
+    
+    double min;
+    double max;
+    unsigned int nb;
+    
+  public:
+
+    range(double min, double max, unsigned int nb) : min(min), max(max), nb(nb) {}
+    range(unsigned int nb)                         : range(0,1,nb)              {}
+    range()                        = delete;
+    range(const range&)            = default;
+    range& operator=(const range&) = default;
+    
+    class iterator : public std::iterator<std::random_access_iterator_tag,double> {
+    private:
+      unsigned int current;
+      double min;
+      double coef;
+      iterator(unsigned int current, double min, double coef) : current(current), min(min), coef(coef) {}
+    public:
+      iterator()                           = default;
+      iterator(const iterator&)            = default;
+      iterator& operator=(const iterator&) = default;
+      iterator(unsigned int current, double min, double max, unsigned int nb) : current(current), min(min), coef((max-min)/(nb-1)) {}
+      iterator(double min, double max, unsigned int nb) : iterator(0,min,max,nb) {}
+      iterator& operator++() {++current; return *this;}
+      iterator& operator--() {--current; return *this;}
+      iterator& operator+=(int diff) {current+=diff; return *this;}
+      iterator& operator-=(int diff) {current-=diff; return *this;}
+      iterator operator++(int) {iterator res = *this; ++*this; return res;}
+      iterator operator--(int) {iterator res = *this; --*this; return res;}
+      int operator-(const iterator& i) const {return current - i.current;}
+      iterator operator+(int i) const {return iterator(current+i,min,coef);}
+      iterator operator-(int i) const {return iterator(current-i,min,coef);}
+      double operator*() const {return min + current*coef;}
+      bool operator==(const iterator& i) const {return current == i.current && min == i.min && coef == i.coef;}
+      bool operator!=(const iterator& i) const {return current != i.current || min != i.min || coef != i.coef;}
+    };
+
+    iterator begin() const {return iterator( 0,min,max,nb);}
+    iterator end()   const {return iterator(nb,min,max,nb);}
+  };
+
+  
+  
 }
