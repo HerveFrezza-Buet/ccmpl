@@ -697,7 +697,6 @@ namespace ccmpl {
   class Patches : public chart::Data {
   public:
 
-    bool active;
     std::vector<std::shared_ptr<Patch>> patches;
     std::function<void (std::vector<std::shared_ptr<Patch>>&)> fill;
       
@@ -753,7 +752,6 @@ namespace ccmpl {
   class Image : public chart::Data {
   public:
 
-    bool active;
     // x and y are 1D 
     // z is a vectorized matrix which can contain Gray (depth=1) or RGB (depth=3) values
     std::vector<double> x, y, z;
@@ -807,6 +805,69 @@ namespace ccmpl {
     return Image(arglist, f);
   }
 
+
+  /////////////
+  //         //
+  // Contours   //
+  //         //
+  /////////////
+
+  
+  class Contours : public chart::Data {
+  public:
+
+    // x and y are 1D 
+    // z is a vectorized matrix which can contain Gray (depth=1) or RGB (depth=3) values
+    std::vector<double> x, y, z;
+    unsigned int width;
+    unsigned int depth;
+    std::function<void (std::vector<double>&, std::vector<double>&, std::vector<double>&, unsigned int&, unsigned int&)> fill;
+      
+    template<typename FILL>
+    Contours(const std::string& arglist, 
+	  const FILL& f) : chart::Data(arglist), active(true), fill(f) {}
+    virtual ~Contours() {}
+
+    virtual void refill() {
+      fill(x, y, z, width, depth);
+    }
+
+    virtual Element* clone() const {
+      Contours* res = new Contours(args, fill);
+      res->x = x;
+      res->y = y;
+      res->z = z;
+      res->width = width;
+      res->depth = depth;
+      return res;
+    }
+      
+    virtual void plot_getdata(std::ostream& os) {
+      python::get_contours(os,suffix);
+    }
+      
+    virtual void plot(std::ostream& os) {
+      python::plot_contours(os,suffix, args);
+    }
+
+    virtual void _print_data(std::ostream& os) {
+      for(auto& xi : x) 
+	os << ' ' << xi;
+      os << std::endl;
+      for(auto& yi : y) 
+	os << ' ' << yi;
+      os << std::endl;
+      for(auto& zi : z) 
+	os << ' ' << zi;
+      os << std::endl;
+      os << width << ' ' << depth << std::endl;
+    }
+  };
+
+  template<typename FILL>
+  inline Contours contours(const std::string& arglist, const FILL& f) {
+    return Contours(arglist, f);
+  }
 
   /////////////
   //         //
