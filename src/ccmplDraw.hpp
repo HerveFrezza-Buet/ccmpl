@@ -701,7 +701,7 @@ namespace ccmpl {
     std::function<void (std::vector<std::shared_ptr<Patch>>&)> fill;
       
     template<typename FILL>
-    Patches(const FILL& f) : chart::Data(""), active(true), fill(f) {}
+    Patches(const FILL& f) : chart::Data(""), fill(f) {}
     virtual ~Patches() {}
 
     virtual void refill() {
@@ -761,7 +761,7 @@ namespace ccmpl {
       
     template<typename FILL>
     Image(const std::string& arglist, 
-	  const FILL& f) : chart::Data(arglist), active(true), fill(f) {}
+	  const FILL& f) : chart::Data(arglist), fill(f) {}
     virtual ~Image() {}
 
     virtual void refill() {
@@ -806,11 +806,11 @@ namespace ccmpl {
   }
 
 
-  /////////////
-  //         //
-  // Contours   //
-  //         //
-  /////////////
+  //////////////
+  //          //
+  // Contours //
+  //          //
+  //////////////
 
   
   class Contours : public chart::Data {
@@ -818,49 +818,54 @@ namespace ccmpl {
 
     // x and y are 1D 
     // z is a vectorized matrix which can contain Gray (depth=1) or RGB (depth=3) values
-    std::vector<double> x, y, z;
-    unsigned int width;
-    unsigned int depth;
-    std::function<void (std::vector<double>&, std::vector<double>&, std::vector<double>&, unsigned int&, unsigned int&)> fill;
+    std::vector<double> z;
+    double xmin; double xmax; unsigned int nb_x;
+    double ymin; double ymax; unsigned int nb_y;
+    double zmin; double zmax; unsigned int nb_z;
+    
+    std::function<void (std::vector<double>& z,
+			double&, double&, unsigned int&,
+			double&, double&, unsigned int&,
+			double&, double&, unsigned int&)> fill;
       
     template<typename FILL>
     Contours(const std::string& arglist, 
-	  const FILL& f) : chart::Data(arglist), active(true), fill(f) {}
+	  const FILL& f) : chart::Data(arglist), fill(f) {}
     virtual ~Contours() {}
 
     virtual void refill() {
-      fill(x, y, z, width, depth);
+      fill(z,xmin,xmax,nb_x,ymin,ymax,nb_y,zmin,zmax,nb_z);
     }
 
     virtual Element* clone() const {
       Contours* res = new Contours(args, fill);
-      res->x = x;
-      res->y = y;
-      res->z = z;
-      res->width = width;
-      res->depth = depth;
+      res->z    = z;
+      res->xmin = xmin;
+      res->xmax = xmax;
+      res->nb_x = nb_x;
+      res->ymin = ymin;
+      res->ymax = ymax;
+      res->nb_y = nb_y;
+      res->zmin = zmin;
+      res->zmax = zmax;
+      res->nb_z = nb_z;
       return res;
     }
       
     virtual void plot_getdata(std::ostream& os) {
-      python::get_contours(os,suffix);
+      python::get_contours(os,suffix, args);
     }
       
     virtual void plot(std::ostream& os) {
-      python::plot_contours(os,suffix, args);
+      python::plot_contours(os,suffix);
     }
 
     virtual void _print_data(std::ostream& os) {
-      for(auto& xi : x) 
-	os << ' ' << xi;
+      std::cout << xmin << ' ' << xmax << ' ' << nb_x << std::endl;
+      std::cout << ymin << ' ' << ymax << ' ' << nb_y << std::endl;
+      std::cout << zmin << ' ' << zmax << ' ' << nb_z << std::endl;
+      for(auto& zi : z) os << ' ' << zi;
       os << std::endl;
-      for(auto& yi : y) 
-	os << ' ' << yi;
-      os << std::endl;
-      for(auto& zi : z) 
-	os << ' ' << zi;
-      os << std::endl;
-      os << width << ' ' << depth << std::endl;
     }
   };
 

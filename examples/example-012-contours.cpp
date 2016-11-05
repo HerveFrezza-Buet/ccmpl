@@ -10,17 +10,38 @@ using namespace std::placeholders;
 #define VIEW_FILE "viewer-012-contours.py"
 
 
+double height(double x, double y) {
+  double dx   = x-2;
+  double dy   = y-2;
+  double res  = std::exp(-.1*(dx*dx+dy*dy));
+  res        -= std::exp(-.1*x*x - y*y);
+  dx          = x-4;
+  dy          = y+3;
+  res        -= std::exp(-.2*dx*dx - .1*dy*dy);
+  
+  return res;    
+}
+
+#define XRADIUS    4
+#define YRADIUS    3
+#define NB        50
+#define NB_LEVELS 20
 void fill_data(std::vector<double>& z,
 	       double& xmin, double& xmax, unsigned int& nb_x,
-	       double& ymin, double& ymax, unsigned int& nb_y) {
+	       double& ymin, double& ymax, unsigned int& nb_y,
+	       double& zmin, double& zmax, unsigned int& nb_z) {
 
-  xmin = -4;
-  xmax =  4;
-  nb_x = 40;
-  
-  ymin = -3;
-  ymax =  3;
-  nb_y = 30;
+  xmin = -XRADIUS;
+  xmax =  XRADIUS;
+  nb_x = NB*XRADIUS;
+
+  ymin = -YRADIUS;
+  ymax =  YRADIUS;
+  nb_y = NB*YRADIUS;
+
+  zmin =         0;
+  zmax =         0;
+  nb_z = NB_LEVELS;
 
   z.clear();
   auto outz = std::back_inserter(z);
@@ -29,18 +50,13 @@ void fill_data(std::vector<double>& z,
   
   for(auto y : ccmpl::range(ymin, ymax, nb_y))
     for(auto x : ccmpl::range(xmin, xmax, nb_x))
-      *(outz++) = 0
+      *(outz++) = height(x,y);
 }
 
 
 int main(int argc, char* argv[]) {
 
-  double current_time;
 
-  for(double x : ccmpl::range(0,2,11))
-    std::cout << x << std::endl;
-
-  /*
   // Every program may start like this.
 
   if(argc != 2) {
@@ -54,41 +70,27 @@ int main(int argc, char* argv[]) {
 
   // Let us define the layout, a 1x1 grid here. Args are width, height
   // and the grid structure.
-  auto display = ccmpl::layout(8.0, 4.0, {"##"});
-  display.set_ratios({1.,1.}, {1.});
+  auto display = ccmpl::layout(8.0, 6.0, {"#"});
+  display.set_ratios({4.}, {3.});
 
-  // Let us define our charts (2 here)
   // Gray image
-  display().title   = "Gray Image  ";                                                    // set chart titles
-  display()         = {-3, 3, -3, 3};                                                 // set xmin,xmax,ymin,ymax; actually, they will be overwritten by the ccmpl::image
+  display().title   = "Contours  ";  
+  display()         = {-XRADIUS, XRADIUS, -YRADIUS, YRADIUS};  
   display()         = "equal";
-  display()        += ccmpl::image("cmap='binary', interpolation='bilinear', clim=(0,1)", std::bind(fill_data, _1, _2, _3, _4, _5, std::ref(current_time))); // the filling function
+  display()        += ccmpl::contours("colors='k'", fill_data);
   display++;
-
-  // RGB Image
-  display().title   = " RGB Image ";                                                    // set chart titles
-  display()         = {-3, 3, -3, 3};                                                 // set xmin,xmax,ymin,ymax; actually, they will be overwritten by the ccmpl::image
-  display()         = "equal";
-  display()        += ccmpl::image("interpolation='bilinear'", std::bind(fill_data_rgb, _1, _2, _3, _4, _5, std::ref(current_time))); // the filling function
-
 
   
 
   if(generate_mode) {
-    display.make_python(VIEW_FILE,true); // boolean tells wether we display some GUI or not.
-    return 0;                            // Python script is generated, that's all for generation mode.
+    display.make_python(VIEW_FILE,false);
+    return 0;                            
   }
 
   // Execution
-
-  // ccmpl::filename("img",i,"png") helps to define "img-%06d.png" names. Use ccmpl::nofile() if no image files are needed.
-
-  for(current_time = 0; current_time < 1000; ++current_time)
-    std::cout << display("##", // Use # or - for each data element for trigerring its update.
-			 ccmpl::nofile(),  // name of the generated pdf file
-			 ccmpl::nofile()); // name of the generated png file. 
-
-  std::cout << ccmpl::stop;
-  */
+  
+  std::cout << display("#", "ccmpl-012.pdf", ccmpl::nofile())
+	    << ccmpl::stop;
+  
   return 0;	 
 }

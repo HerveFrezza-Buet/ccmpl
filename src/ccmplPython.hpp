@@ -586,6 +586,35 @@ namespace ccmpl {
       os << "\t\tax" << suffix << ".set_ylim((y.min(), y.max()))" << std::endl;
       end_data(os);
     }
+    
+
+    inline void plot_contours(std::ostream& os,
+			   std::string suffix) {
+      os << "ax" << suffix << " = ax" << std::endl
+	 << "contours" << suffix << " = None" << std::endl;
+    }
+
+    inline void get_contours(std::ostream& os,
+			     std::string suffix, 
+			     std::string args) {
+      start_data(os);
+      os << "\t\t(xmin,xmax,nb_x) = [float(v) for v in sys.stdin.next().split()]" << std::endl;
+      os << "\t\t(ymin,ymax,nb_y) = [float(v) for v in sys.stdin.next().split()]" << std::endl;
+      os << "\t\t(zmin,zmax,nb_z) = [float(v) for v in sys.stdin.next().split()]" << std::endl;
+      os << "\t\tstep = (xmax-xmin)/(nb_x-1)" << std::endl;
+      os << "\t\tx    = np.arange(xmin, xmax+.5*step,step)" << std::endl;
+      os << "\t\tstep = (ymax-ymin)/(nb_y-1)" << std::endl;
+      os << "\t\ty    = np.arange(ymin, ymax+.5*step,step)" << std::endl;
+      os << "\t\tX, Y = np.meshgrid(x, y)" << std::endl;
+      os << "\t\tZ = np.array([float(v) for v in sys.stdin.next().split()]).reshape(int(nb_y),int(nb_x))" << std::endl;
+      os << "\t\tax" << suffix << ".set_xlim((xmin,xmax))" << std::endl;
+      os << "\t\tax" << suffix << ".set_ylim((ymin,ymax))" << std::endl;
+      os << "\t\tif contours" << suffix << " != None : contours" << suffix << ".remove()" << std::endl
+	 << "\t\tcontours" << suffix << " = ax" << suffix << ".contour(X, Y, Z, int(nb_z)" << add_args(args) << ')' << std::endl;
+      end_data(os);
+    }
+
+    
 
     inline void plot_text(std::ostream& os,
 			  std::string suffix,

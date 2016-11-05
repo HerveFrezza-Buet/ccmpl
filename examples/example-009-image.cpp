@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
   bool generate_mode = std::string(argv[1])=="generate";
 
 
-  // Let us define the layout, a 1x1 grid here. Args are width, height
+  // Let us define the layout, a 1x2 grid here. Args are width, height
   // and the grid structure.
   auto display = ccmpl::layout(8.0, 4.0, {"##"});
   display.set_ratios({1.,1.}, {1.});
