@@ -609,8 +609,10 @@ namespace ccmpl {
       os << "\t\tZ = np.array([float(v) for v in sys.stdin.next().split()]).reshape(int(nb_y),int(nb_x))" << std::endl;
       os << "\t\tax" << suffix << ".set_xlim((xmin,xmax))" << std::endl;
       os << "\t\tax" << suffix << ".set_ylim((ymin,ymax))" << std::endl;
-      os << "\t\tif contours" << suffix << " != None : contours" << suffix << ".remove()" << std::endl
-	 << "\t\tcontours" << suffix << " = ax" << suffix << ".contour(X, Y, Z, V"<< add_args(args) << ')' << std::endl;
+      os << "\t\tif contours" << suffix << " != None : " << std::endl;
+      os << "\t\t\tfor d in contours" << suffix << ".collections :" << std::endl;
+      os << "\t\t\t\td.remove()" << std::endl;
+      os << "\t\tcontours" << suffix << " = ax" << suffix << ".contour(X, Y, Z, V"<< add_args(args) << ')' << std::endl;
       if(fontsize != 0)
 	os << "\t\tplt.clabel(contours" << suffix << ", fontsize=" << fontsize << ", inline=1)" << std::endl;
       end_data(os);
