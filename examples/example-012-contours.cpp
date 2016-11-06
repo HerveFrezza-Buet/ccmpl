@@ -39,8 +39,8 @@ void fill_data(std::vector<double>& z,
   ymax =  YRADIUS;
   nb_y = NB*YRADIUS;
 
-  zmin =         0;
-  zmax =         0;
+  zmin =        -1;
+  zmax =         1;
   nb_z = NB_LEVELS;
 
   z.clear();
@@ -67,20 +67,16 @@ int main(int argc, char* argv[]) {
   }
   bool generate_mode = std::string(argv[1])=="generate";
 
-
   // Let us define the layout, a 1x1 grid here. Args are width, height
   // and the grid structure.
   auto display = ccmpl::layout(8.0, 6.0, {"#"});
   display.set_ratios({4.}, {3.});
 
-  // Gray image
   display().title   = "Contours  ";  
   display()         = {-XRADIUS, XRADIUS, -YRADIUS, YRADIUS};  
   display()         = "equal";
-  display()        += ccmpl::contours("colors='k'", fill_data);
+  display()        += ccmpl::contours("", 9, fill_data); // 9 = label fontsize, 0 removes labels.
   display++;
-
-  
 
   if(generate_mode) {
     display.make_python(VIEW_FILE,false);

@@ -31,6 +31,7 @@
 #include <list>
 #include <stdexcept>
 #include <ccmplTypes.hpp>
+#include <ccmplUtility.hpp>
 
 namespace ccmpl {
   namespace python {
@@ -54,13 +55,15 @@ namespace ccmpl {
       return std::string(suffix,0,i);
     }
       
-    inline void header(std::ostream& os) {
+    inline void header(std::ostream& os, bool gui) {
       os << "#!/usr/bin/env python" << std::endl
 	 << "# -*- coding: utf-8 -*-" << std::endl
 	 << std::endl
 	 << "import numpy as np" << std::endl
-	 << "import matplotlib as mpl" << std::endl
-	 << "import matplotlib.pyplot as plt" << std::endl
+	 << "import matplotlib as mpl" << std::endl;
+      if(!gui)
+	os << "mpl.use('Agg') # No GUI..." << std::endl;
+      os << "import matplotlib.pyplot as plt" << std::endl
 	 << "import matplotlib.patches as patches" << std::endl
 	 << "from mpl_toolkits.mplot3d import Axes3D" << std::endl
 	 << "from matplotlib.image import NonUniformImage" << std::endl
@@ -139,8 +142,6 @@ namespace ccmpl {
     }
       
     inline void end_read(std::ostream& os, bool gui, bool movie) {
-      if(!gui)
-	os << '#';
       os << "\tif pdf_name != '' : " << std::endl
 	 << "\t\tplt.savefig(pdf_name, bbox_inches='tight')" << std::endl
 	 << "\t\tprint('file \"%s\" generated'%pdf_name)" << std::endl
@@ -149,9 +150,10 @@ namespace ccmpl {
 	 << "\t\t\tplt.savefig(png_name, bbox_inches='tight', dpi=png_dpi)" << std::endl
 	 << "\t\telse:" << std::endl
 	 << "\t\t\tplt.savefig(png_name, bbox_inches='tight')" << std::endl
-	 << "\t\tprint('file \"%s\" generated'%png_name)" << std::endl
-	 << "\tfig.canvas.flush_events()" << std::endl
-         << "\tfig.canvas.draw()" << std::endl;
+	 << "\t\tprint('file \"%s\" generated'%png_name)" << std::endl;
+      if(!gui) os << '#';
+	os << "\tfig.canvas.flush_events()" << std::endl
+	   << "\tfig.canvas.draw()" << std::endl;
       if(movie)
 	os << "\twriter.grab_frame()" << std::endl;
       os << "\tcont = sys.stdin.next().split()[0]=='cont'" << std::endl;
@@ -512,9 +514,6 @@ namespace ccmpl {
 	 << "\t\tvectors" << suffix << " = ax" << suffix << ".quiver(x,y,u,v" << add_args(args) << ')' << std::endl;
       end_data(os);
     }
-
-
-
       
     inline void plot_vbar(std::ostream& os,
 			  std::string suffix,
@@ -582,25 +581,26 @@ namespace ccmpl {
       os << "\t\tim = np.array(rawz).reshape((len(rawz)/(width*depth), width, depth))" << std::endl;
       os << "\t\taxim" << suffix << ".set_data(x, y, im)" << std::endl;
       os << "\t\taxim" << suffix << ".set_extent((x.min(), x.max(), y.min(), y.max()))" << std::endl;
-      os << "\t\tax" << suffix << ".set_xlim((x.min(), x.max()))" << std::endl;
-      os << "\t\tax" << suffix << ".set_ylim((y.min(), y.max()))" << std::endl;
+      os << "\t\tax"   << suffix << ".set_xlim((x.min(), x.max()))" << std::endl;
+      os << "\t\tax"   << suffix << ".set_ylim((y.min(), y.max()))" << std::endl;
       end_data(os);
     }
     
 
     inline void plot_contours(std::ostream& os,
-			   std::string suffix) {
+			      std::string suffix) {
       os << "ax" << suffix << " = ax" << std::endl
 	 << "contours" << suffix << " = None" << std::endl;
     }
 
     inline void get_contours(std::ostream& os,
 			     std::string suffix, 
-			     std::string args) {
+			     std::string args,
+			     unsigned int fontsize) {
       start_data(os);
       os << "\t\t(xmin,xmax,nb_x) = [float(v) for v in sys.stdin.next().split()]" << std::endl;
       os << "\t\t(ymin,ymax,nb_y) = [float(v) for v in sys.stdin.next().split()]" << std::endl;
-      os << "\t\t(zmin,zmax,nb_z) = [float(v) for v in sys.stdin.next().split()]" << std::endl;
+      os << "\t\tV                = np.array([float(v) for v in sys.stdin.next().split()])" << std::endl;
       os << "\t\tstep = (xmax-xmin)/(nb_x-1)" << std::endl;
       os << "\t\tx    = np.arange(xmin, xmax+.5*step,step)" << std::endl;
       os << "\t\tstep = (ymax-ymin)/(nb_y-1)" << std::endl;
@@ -610,7 +610,9 @@ namespace ccmpl {
       os << "\t\tax" << suffix << ".set_xlim((xmin,xmax))" << std::endl;
       os << "\t\tax" << suffix << ".set_ylim((ymin,ymax))" << std::endl;
       os << "\t\tif contours" << suffix << " != None : contours" << suffix << ".remove()" << std::endl
-	 << "\t\tcontours" << suffix << " = ax" << suffix << ".contour(X, Y, Z, int(nb_z)" << add_args(args) << ')' << std::endl;
+	 << "\t\tcontours" << suffix << " = ax" << suffix << ".contour(X, Y, Z, V"<< add_args(args) << ')' << std::endl;
+      if(fontsize != 0)
+	os << "\t\tplt.clabel(contours" << suffix << ", fontsize=" << fontsize << ", inline=1)" << std::endl;
       end_data(os);
     }
 

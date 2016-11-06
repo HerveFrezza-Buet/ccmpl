@@ -822,6 +822,7 @@ namespace ccmpl {
     double xmin; double xmax; unsigned int nb_x;
     double ymin; double ymax; unsigned int nb_y;
     double zmin; double zmax; unsigned int nb_z;
+    unsigned int fontsize;
     
     std::function<void (std::vector<double>& z,
 			double&, double&, unsigned int&,
@@ -829,8 +830,9 @@ namespace ccmpl {
 			double&, double&, unsigned int&)> fill;
       
     template<typename FILL>
-    Contours(const std::string& arglist, 
-	  const FILL& f) : chart::Data(arglist), fill(f) {}
+    Contours(const std::string& arglist,
+	     unsigned int fontsize,
+	     const FILL& f) : chart::Data(arglist), fontsize(fontsize), fill(f) {}
     virtual ~Contours() {}
 
     virtual void refill() {
@@ -838,22 +840,22 @@ namespace ccmpl {
     }
 
     virtual Element* clone() const {
-      Contours* res = new Contours(args, fill);
-      res->z    = z;
-      res->xmin = xmin;
-      res->xmax = xmax;
-      res->nb_x = nb_x;
-      res->ymin = ymin;
-      res->ymax = ymax;
-      res->nb_y = nb_y;
-      res->zmin = zmin;
-      res->zmax = zmax;
-      res->nb_z = nb_z;
+      Contours* res = new Contours(args, fontsize, fill);
+      res->z        = z;
+      res->xmin     = xmin;
+      res->xmax     = xmax;
+      res->nb_x     = nb_x;
+      res->ymin     = ymin;
+      res->ymax     = ymax;
+      res->nb_y     = nb_y;
+      res->zmin     = zmin;
+      res->zmax     = zmax;
+      res->nb_z     = nb_z;
       return res;
     }
       
     virtual void plot_getdata(std::ostream& os) {
-      python::get_contours(os,suffix, args);
+      python::get_contours(os,suffix, args, fontsize);
     }
       
     virtual void plot(std::ostream& os) {
@@ -863,15 +865,17 @@ namespace ccmpl {
     virtual void _print_data(std::ostream& os) {
       std::cout << xmin << ' ' << xmax << ' ' << nb_x << std::endl;
       std::cout << ymin << ' ' << ymax << ' ' << nb_y << std::endl;
-      std::cout << zmin << ' ' << zmax << ' ' << nb_z << std::endl;
-      for(auto& zi : z) os << ' ' << zi;
+      for(auto v : ccmpl::range(zmin,zmax,nb_z)) os << ' ' << v;
+      os << std::endl;
+      for(auto zi : z) os << ' ' << zi;
       os << std::endl;
     }
   };
 
   template<typename FILL>
-  inline Contours contours(const std::string& arglist, const FILL& f) {
-    return Contours(arglist, f);
+  inline Contours contours(const std::string& arglist, 
+	     unsigned int fontsize, const FILL& f) {
+    return Contours(arglist, fontsize, f);
   }
 
   /////////////

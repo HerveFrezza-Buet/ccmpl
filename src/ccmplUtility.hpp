@@ -64,13 +64,14 @@ namespace ccmpl {
     private:
       unsigned int current;
       double min;
+      double max;
       double coef;
-      iterator(unsigned int current, double min, double coef) : current(current), min(min), coef(coef) {}
+      iterator(unsigned int current, double min, double max, double coef) : current(current), min(min), max(max), coef(coef) {}
     public:
       iterator()                           = default;
       iterator(const iterator&)            = default;
       iterator& operator=(const iterator&) = default;
-      iterator(unsigned int current, double min, double max, unsigned int nb) : current(current), min(min), coef((max-min)/(nb-1)) {}
+      iterator(unsigned int current, double min, double max, unsigned int nb) : current(current), min(min), max(max), coef((max-min)/(nb-1)) {}
       iterator(double min, double max, unsigned int nb) : iterator(0,min,max,nb) {}
       iterator& operator++() {++current; return *this;}
       iterator& operator--() {--current; return *this;}
@@ -79,11 +80,11 @@ namespace ccmpl {
       iterator operator++(int) {iterator res = *this; ++*this; return res;}
       iterator operator--(int) {iterator res = *this; --*this; return res;}
       int operator-(const iterator& i) const {return current - i.current;}
-      iterator operator+(int i) const {return iterator(current+i,min,coef);}
-      iterator operator-(int i) const {return iterator(current-i,min,coef);}
+      iterator operator+(int i) const {return iterator(current+i,min,max,coef);}
+      iterator operator-(int i) const {return iterator(current-i,min,max,coef);}
       double operator*() const {return min + current*coef;}
-      bool operator==(const iterator& i) const {return current == i.current && min == i.min && coef == i.coef;}
-      bool operator!=(const iterator& i) const {return current != i.current || min != i.min || coef != i.coef;}
+      bool operator==(const iterator& i) const {return current == i.current && min == i.min && max == i.max;}
+      bool operator!=(const iterator& i) const {return current != i.current || min != i.min || max != i.max;}
     };
 
     iterator begin() const {return iterator( 0,min,max,nb);}

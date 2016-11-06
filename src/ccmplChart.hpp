@@ -496,7 +496,7 @@ namespace ccmpl {
 	file.exceptions(std::ios::failbit | std::ios::badbit);
 	file.open(filename.c_str());
 
-	python::header(file);
+	python::header(file,use_gui);
 	python::open_plot(file);
 	python::create_figure(file,
 			      width,height,
@@ -529,7 +529,7 @@ namespace ccmpl {
 	file.exceptions(std::ios::failbit | std::ios::badbit);
 	file.open(filename.c_str());
 
-	python::header(file);
+	python::header(file,use_gui);
 	python::create_figure(file,
 			      width,height,
 			      xsize,ysize,
