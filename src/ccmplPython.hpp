@@ -568,6 +568,8 @@ namespace ccmpl {
 			   std::string args) {
       os << "ax" << suffix << " = ax" << std::endl;
       os << "axim" << suffix << " = NonUniformImage(ax " << add_args(args)  << ")" << std::endl;
+      os << "axim" << suffix << ".set_data([0,1],[0,1],np.array([0,0,0,0]).reshape((2,2,1))) # fake image" << std::endl;
+      os << "axim" << suffix << ".set_extent((0,1,0,1))" << std::endl;
       os << "ax.images.append(axim" << suffix << ")" << std::endl;
     }
 
