@@ -273,6 +273,26 @@ namespace ccmpl {
       end_data(os);
     }
       
+    inline void plot_lines(std::ostream& os,
+			   std::string suffix,
+			   std::string args,
+			   unsigned int nb) {
+      for(unsigned int i = 0; i < nb; ++i)
+	os << "line" << suffix << '_' << i << ", = plt.plot([], []" << add_args(args) << ")" << std::endl;
+    }
+      
+    inline void get_lines(std::ostream& os,
+			  std::string suffix,
+			  unsigned int nb) {
+      start_data(os);
+      for(unsigned int i = 0; i < nb; ++i) {
+	os << "\t\tx = [float(v) for v in sys.stdin.next().split()]" << std::endl
+	   << "\t\ty = [float(v) for v in sys.stdin.next().split()]" << std::endl
+	   << "\t\tline" << suffix << '_' << i << ".set_data(x,y)" << std::endl;
+      }
+      end_data(os);
+    }
+      
     inline void plot_dot(std::ostream& os,
 			 std::string suffix) {
       os << "ax" << suffix << " = ax" << std::endl

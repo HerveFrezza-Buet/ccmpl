@@ -29,6 +29,7 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <array>
 #include <iostream>
 #include <memory>
 
@@ -281,6 +282,60 @@ namespace ccmpl {
     return Line(arglist,f);
   }
 
+  
+  ///////////
+  //       //
+  // Lines //
+  //       //
+  ///////////
+
+  template<unsigned int NB>
+  class Lines : public chart::Data {
+  public:
+    std::array<std::vector<Point>,NB> lines;
+    std::function<void (std::array<std::vector<Point>,NB>&)> fill;
+      
+    template<typename FILL>
+    Lines(const std::string& arglist,
+	 const FILL& f) : chart::Data(arglist), fill(f) {}
+    virtual ~Lines() {}
+      
+    virtual chart::Element* clone() const {
+      Lines<NB>* res = new Lines(args,fill);
+      res->lines = lines;
+      return res;
+    }
+
+    virtual void refill() {
+      fill(lines);
+    }
+			    
+
+    virtual void _print_data(std::ostream& os) {
+      for(auto& points : lines) {
+	for(auto& pt : points) 
+	  os << ' ' << pt.x;
+	os << std::endl;
+	for(auto& pt : points) 
+	  os << ' ' << pt.y;
+	os << std::endl;
+      }
+    }
+
+    virtual void plot_getdata(std::ostream& os) {
+      python::get_lines(os,suffix,NB);
+    }
+
+    virtual void plot(std::ostream& os) {
+      python::plot_lines(os,suffix,args,NB);
+    }
+      
+  };
+
+  template<unsigned int NB, typename FILL>
+  inline Lines<NB> lines(const std::string& arglist,const FILL& f) {
+    return Lines<NB>(arglist,f);
+  }
 
 
   /////////////
