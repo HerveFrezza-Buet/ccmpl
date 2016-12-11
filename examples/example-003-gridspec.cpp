@@ -98,6 +98,7 @@ int main(int argc, char* argv[]) {
   display()        += ccmpl::lines<10>("'r-', linewidth=1.0",  fill_lines                                       ); // data element #5                                       
 
   if(generate_mode) {
+    // WARNING : display.make_python(...,false) generates a matplotlib bug when ccmpl::lines is used. 
     display.make_python(VIEW_FILE,true); 
     return 0;                          
   }
