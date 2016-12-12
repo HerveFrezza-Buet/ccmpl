@@ -497,7 +497,7 @@ namespace ccmpl {
 	file.open(filename.c_str());
 
 	python::header(file,use_gui);
-	python::open_plot(file);
+	python::open_plot(file, use_gui);
 	python::create_figure(file,
 			      width,height,
 			      xsize,ysize,

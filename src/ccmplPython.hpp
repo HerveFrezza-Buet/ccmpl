@@ -84,7 +84,9 @@ namespace ccmpl {
       os << "]";
     }
 
-    inline void open_plot(std::ostream& os) {
+    inline void open_plot(std::ostream& os, bool gui) {
+      if(!gui)
+	os << "#";
       os << "plt.ion()" << std::endl;
     }
 
