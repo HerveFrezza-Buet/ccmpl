@@ -28,6 +28,7 @@
 
 #include <ccmplChart.hpp>
 #include <ccmplDraw.hpp>
+#include <ccmplMain.hpp>
 #include <ccmplPython.hpp>
 #include <ccmplTypes.hpp>
 #include <ccmplUtility.hpp>

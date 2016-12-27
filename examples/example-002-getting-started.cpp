@@ -6,7 +6,7 @@
 
 using namespace std::placeholders;
 
-#define VIEW_FILE "viewer-002-getting-started.py"
+#define VIEW_PREFIX "viewer-002-getting-started"
 
 // This function fills a vector of points to be plotted, depending on
 // current time.
@@ -29,15 +29,9 @@ int main(int argc, char* argv[]) {
 
   double current_time;
 
-  // Every program may start like this.
-
-  if(argc != 2) {
-    std::cout << "Usage : " << std::endl
-	      << argv[0] << " generate" << std::endl
-	      << argv[0] << " run | ./" << VIEW_FILE << std::endl;
-    return 0;
-  }
-  bool generate_mode = std::string(argv[1])=="generate";
+  // Let us use a predefined class ccmpl::Main in order to handle the
+  // display in the main function.
+  ccmpl::Main m(argc,argv,VIEW_PREFIX);
 
 
   // Let us define the layout, a 1x1 grid here. Args are width, height
@@ -55,16 +49,17 @@ int main(int argc, char* argv[]) {
   display()        += ccmpl::hbar("'r'",                 std::bind(fill_hbar, _1, std::ref(current_time))); // data element #2
   display()        += ccmpl::vbar("'g'",                 std::bind(fill_vbar, _1, std::ref(current_time))); // data element #3
 
-  if(generate_mode) {
-    display.make_python(VIEW_FILE,true); 
-    return 0;                          
-  }
+  // the ccmpl::Main object handles generation here.
+  m.generate(display);
 
   // Execution
 
-  for(current_time = 0; true ; ++current_time)
+  for(current_time = 0; current_time < 100 ; ++current_time)
     std::cout << display("###", // Use # or - for each data element for trigerring its update.
-			 ccmpl::nofile(), ccmpl::nofile()); 
+			 ccmpl::nofile(), ccmpl::nofile());
+  std::cout << ccmpl::stop;
+   
+  
 
   return 0;	 
 }
