@@ -146,13 +146,13 @@ namespace ccmpl {
     inline void end_read(std::ostream& os, bool gui, bool movie) {
       os << "\tif pdf_name != '' : " << std::endl
 	 << "\t\tplt.savefig(pdf_name, bbox_inches='tight')" << std::endl
-	 << "\t\tprint('file \"%s\" generated'%pdf_name)" << std::endl
+	 << "#\t\tprint('file \"%s\" generated'%pdf_name)" << std::endl
 	 << "\tif png_name != '' : " << std::endl
 	 << "\t\tif png_dpi != 0:" << std::endl
 	 << "\t\t\tplt.savefig(png_name, bbox_inches='tight', dpi=png_dpi)" << std::endl
 	 << "\t\telse:" << std::endl
 	 << "\t\t\tplt.savefig(png_name, bbox_inches='tight')" << std::endl
-	 << "\t\tprint('file \"%s\" generated'%png_name)" << std::endl;
+	 << "#\t\tprint('file \"%s\" generated'%png_name)" << std::endl;
       if(!gui) os << '#';
 	os << "\tfig.canvas.flush_events()" << std::endl
 	   << "\tfig.canvas.draw()" << std::endl;
