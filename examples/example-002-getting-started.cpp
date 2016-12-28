@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
   display()        += ccmpl::vbar("'g'",                 std::bind(fill_vbar, _1, std::ref(current_time))); // data element #3
 
   // the ccmpl::Main object handles generation here.
-  m.generate(display);
+  m.generate(display, true); // true means "use GUI".
 
   // Execution
 

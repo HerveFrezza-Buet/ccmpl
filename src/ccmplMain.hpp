@@ -37,12 +37,12 @@ namespace ccmpl {
       movie         = std::string(argv[1])=="movie";
     }
 
-    void generate(ccmpl::chart::Layout& display) {
+    void generate(ccmpl::chart::Layout& display, bool use_gui) {
       if(generate_mode) {
 	if(movie)
-	  display.make_movie_python(pyfile,true, "avconv", "", "", "", 25, moviefile, 300);
+	  display.make_movie_python(pyfile,use_gui, "avconv", "", "", "", 25, moviefile, 300);
 	else
-	  display.make_python(pyfile,true); 
+	  display.make_python(pyfile,use_gui); 
 	std::exit(0);                            
       }    
     }	
