@@ -45,6 +45,10 @@ namespace ccmpl {
 	  display.make_python(pyfile,use_gui); 
 	std::exit(0);                            
       }    
-    }	
+    }
+
+    bool movie_mode() const {
+      return movie;
+    }
   };
 }
