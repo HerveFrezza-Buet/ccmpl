@@ -29,7 +29,7 @@ namespace ccmpl {
 		  << argv[0] << " movie" << std::endl
 		  << argv[0] << " display" << std::endl
 		  << "-----------------" << std::endl
-		  << argv[0] << " run | ./" << pyfile << std::endl
+		  << argv[0] << " run | python ./" << pyfile << std::endl
 		  << std::endl;
 	std::exit(0);
       }
