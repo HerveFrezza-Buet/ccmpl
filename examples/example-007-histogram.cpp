@@ -8,7 +8,7 @@
 
 using namespace std::placeholders;
 
-#define VIEW_FILE "viewer-007-histogram.py"
+#define VIEW_PREFIX "viewer-007-histogram"
 
 #define X_MAX           4
 #define X_MIN     -(X_MAX)
@@ -31,15 +31,9 @@ void fill_histogram(std::vector<ccmpl::Point>& data, std::mt19937& generator) {
 
 
 int main(int argc, char* argv[]) {
-  // Every program may start like this.
-
-  if(argc != 2) {
-    std::cout << "Usage : " << std::endl
-	      << argv[0] << " generate" << std::endl
-	      << argv[0] << " run | ./" << VIEW_FILE << std::endl;
-    return 0;
-  }
-  bool generate_mode = std::string(argv[1])=="generate";
+  // Let us use a predefined class ccmpl::Main in order to handle the
+  // display in the main function.
+  ccmpl::Main m(argc,argv,VIEW_PREFIX);
   
   std::random_device rd;
   std::mt19937       gen(rd());
@@ -71,10 +65,8 @@ int main(int argc, char* argv[]) {
 				     X_MIN, X_MAX, NB_X_BINS,
 				     Y_MIN, Y_MAX, NB_Y_BINS);  update_pattern += '#';
 
-  if(generate_mode) {
-    display.make_python(VIEW_FILE,false);  // no gui, we only generate a single pdf.
-    return 0;                          
-  }
+  // the ccmpl::Main object handles generation here.
+  m.generate(display, false); // no gui, we only generate a single pdf
 
   // Execution
   

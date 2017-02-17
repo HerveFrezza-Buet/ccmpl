@@ -6,7 +6,7 @@
 
 using namespace std::placeholders;
 
-#define VIEW_FILE "viewer-004-gridspec.py"
+#define VIEW_PREFIX "viewer-004-gridspec"
 
 void fill_gabor(std::vector<ccmpl::Point>& curve, double& time) {
   curve.clear();
@@ -36,16 +36,9 @@ int main(int argc, char* argv[]) {
 
   double current_time;
 
-  // Every program may start like this.
-
-  if(argc != 2) {
-    std::cout << "Usage : " << std::endl
-	      << argv[0] << " generate" << std::endl
-	      << argv[0] << " run | ./" << VIEW_FILE << std::endl;
-    return 0;
-  }
-  bool generate_mode = std::string(argv[1])=="generate";
-
+  // Let us use a predefined class ccmpl::Main in order to handle the
+  // display in the main function.
+  ccmpl::Main m(argc,argv,VIEW_PREFIX);
 
   // Let us define the layout, a 3x3 grid here. Args are width, height
   // and the grid structure. Only 3 charts will be inserted in the grid.
@@ -78,11 +71,9 @@ int main(int argc, char* argv[]) {
   display()         = ccmpl::show_tics(true,false); 
   display()        += ccmpl::line("'b-', linewidth=2.0",      std::bind(fill_gabor, _1, std::ref(current_time))); // data element #4
 
-  if(generate_mode) {
-    display.make_python(VIEW_FILE,true); 
-    return 0;                          
-  }
-
+  // the ccmpl::Main object handles generation here.
+  m.generate(display, true); // true means "use GUI".  
+  
   // Execution
   
   current_time = 0;

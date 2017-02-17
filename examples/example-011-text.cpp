@@ -7,7 +7,7 @@
 
 using namespace std::placeholders;
 
-#define VIEW_FILE "viewer-011-text.py"
+#define VIEW_PREFIX "viewer-011-text"
 
 // This function fills a vector of points to be plotted, depending on
 // current time.
@@ -21,16 +21,9 @@ int main(int argc, char* argv[]) {
 
   int current_time;
 
-  // Every program may start like this.
-
-  if(argc != 2) {
-    std::cout << "Usage : " << std::endl
-	      << argv[0] << " generate" << std::endl
-	      << argv[0] << " run | ./" << VIEW_FILE << std::endl;
-    return 0;
-  }
-  bool generate_mode = std::string(argv[1])=="generate";
-
+  // Let us use a predefined class ccmpl::Main in order to handle the
+  // display in the main function.
+  ccmpl::Main m(argc,argv,VIEW_PREFIX);
 
   // Let us define the layout, a 1x1 grid here. Args are width, height
   // the grid structure and, optionnaly, the background color of the figure
@@ -46,10 +39,8 @@ int main(int argc, char* argv[]) {
   display()        += ccmpl::text("ha=\"center\", va=\"center\", family=\"cursive\", color=\"b\"",          // extra matplotlib arguments
 				  std::bind(fill_data, _1, _2, std::ref(current_time)));// the filling function
 
-  if(generate_mode) {
-    display.make_python(VIEW_FILE,true); // boolean tells wether we display some GUI or not.
-    return 0;                            // Python script is generated, that's all for generation mode.
-  }
+  // the ccmpl::Main object handles generation here.
+  m.generate(display, true); // true means "use GUI".
 
   // Execution
 

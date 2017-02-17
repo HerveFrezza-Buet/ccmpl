@@ -7,7 +7,7 @@
 
 using namespace std::placeholders;
 
-#define VIEW_FILE "viewer-010-movie.py"
+#define VIEW_PREFIX "viewer-010-movie"
 
 
 void fill_data(std::vector<double>& x, std::vector<double>& y, std::vector<double>& z, unsigned int& width, unsigned int& depth, double& time) {
@@ -75,16 +75,9 @@ int main(int argc, char* argv[]) {
 
   double current_time;
 
-  // Every program may start like this.
-
-  if(argc != 2) {
-    std::cout << "Usage : " << std::endl
-	      << argv[0] << " generate" << std::endl
-	      << argv[0] << " run | ./" << VIEW_FILE << std::endl;
-    return 0;
-  }
-  bool generate_mode = std::string(argv[1])=="generate";
-
+  // Let us use a predefined class ccmpl::Main in order to handle the
+  // display in the main function.
+  ccmpl::Main m(argc,argv,VIEW_PREFIX);
 
   // Let us define the layout, a 1x1 grid here. Args are width, height
   // and the grid structure.
@@ -105,13 +98,8 @@ int main(int argc, char* argv[]) {
   display()         = "equal";
   display()        += ccmpl::image("interpolation='bilinear'", std::bind(fill_data_rgb, _1, _2, _3, _4, _5, std::ref(current_time))); // the filling function
 
-
-  
-
-  if(generate_mode) {
-    display.make_movie_python(VIEW_FILE,true, "avconv", "Image", "CentraleSupelec", "This is a test", 25, "test.mp4", 100); // We invoke the make_movie_python to put the python elements for generating a video, no GUI is displayed
-    return 0;                            // Python script is generated, that's all for generation mode.
-  }
+  // the ccmpl::Main object handles generation here.
+  m.generate(display, true); // true means "use GUI".  
 
   // Execution
 

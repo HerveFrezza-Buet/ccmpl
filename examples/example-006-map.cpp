@@ -6,7 +6,7 @@
 
 using namespace std::placeholders;
 
-#define VIEW_FILE "viewer-006-map.py"
+#define VIEW_PREFIX "viewer-006-map"
 
 
 #define R_MIN .2
@@ -43,15 +43,10 @@ void fill_palette(std::vector<ccmpl::ColorAt>& colored_dots) {
 }
 
 int main(int argc, char* argv[]) {
-  // Every program may start like this.
 
-  if(argc != 2) {
-    std::cout << "Usage : " << std::endl
-	      << argv[0] << " generate" << std::endl
-	      << argv[0] << " run | ./" << VIEW_FILE << std::endl;
-    return 0;
-  }
-  bool generate_mode = std::string(argv[1])=="generate";
+  // Let us use a predefined class ccmpl::Main in order to handle the
+  // display in the main function.
+  ccmpl::Main m(argc,argv,VIEW_PREFIX);
 
   std::string update_pattern = "";
   auto display = ccmpl::layout(8.0, 4.0, {"##"});
@@ -68,11 +63,9 @@ int main(int argc, char* argv[]) {
   display()         = "equal";                           
   display()        += ccmpl::palette("", fill_palette);                     update_pattern += '#'; 
 
-  if(generate_mode) {
-    display.make_python(VIEW_FILE,false);  // no gui, we only generate a single pdf.
-    return 0;                          
-  }
-
+  // the ccmpl::Main object handles generation here.
+  m.generate(display, false); // no gui, we only generate a single pdf
+  
   // Execution
   
   std::cout << display(update_pattern, "ccmpl-006.pdf", ccmpl::nofile())

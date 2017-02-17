@@ -6,7 +6,7 @@
 
 using namespace std::placeholders;
 
-#define VIEW_FILE "viewer-005-scatter.py"
+#define VIEW_PREFIX "viewer-005-scatter"
 
 
 #define R_MIN .2
@@ -60,16 +60,11 @@ void fill_vectors(std::vector<std::pair<ccmpl::Point,ccmpl::Point>>& vectors) {
 }
 
 int main(int argc, char* argv[]) {
-  // Every program may start like this.
 
-  if(argc != 2) {
-    std::cout << "Usage : " << std::endl
-	      << argv[0] << " generate" << std::endl
-	      << argv[0] << " run | ./" << VIEW_FILE << std::endl;
-    return 0;
-  }
-  bool generate_mode = std::string(argv[1])=="generate";
-
+  // Let us use a predefined class ccmpl::Main in order to handle the
+  // display in the main function.
+  ccmpl::Main m(argc,argv,VIEW_PREFIX);
+  
   std::string update_pattern = "";
   auto display = ccmpl::layout(9.0, 3.0, {"###"});
 
@@ -91,10 +86,8 @@ int main(int argc, char* argv[]) {
   display()         = "equal";                           
   display()        += ccmpl::vectors("color='black',pivot='tip'", fill_vectors); update_pattern += '#'; 
 
-  if(generate_mode) {
-    display.make_python(VIEW_FILE,false);  // no gui, we only generate a single pdf.
-    return 0;                          
-  }
+  // the ccmpl::Main object handles generation here.
+  m.generate(display, false); // no gui, we only generate a single pdf
 
   // Execution
   

@@ -6,7 +6,7 @@
 
 using namespace std::placeholders;
 
-#define VIEW_FILE "viewer-001-getting-started.py"
+#define VIEW_PREFIX "viewer-001-getting-started"
 
 // This function fills a vector of points to be plotted, depending on
 // current time.
@@ -21,20 +21,15 @@ int main(int argc, char* argv[]) {
 
   double current_time;
 
-  // Every program may start like this.
-
-  if(argc != 2) {
-    std::cout << "Usage : " << std::endl
-	      << argv[0] << " generate" << std::endl
-	      << argv[0] << " run | ./" << VIEW_FILE << std::endl;
-    return 0;
-  }
-  bool generate_mode = std::string(argv[1])=="generate";
-
+  // Let us use a predefined class ccmpl::Main in order to handle the
+  // display in the main function.
+  ccmpl::Main m(argc,argv,VIEW_PREFIX);
 
   // Let us define the layout, a 1x1 grid here. Args are width, height
   // the grid structure and, optionnaly, the background color of the figure
-  auto display = ccmpl::layout(8.0, 4.0, {"#"}, ccmpl::RGB(1., 1., 1.));
+  auto display = ccmpl::layout(8.0, 4.0,
+			       {"#"},
+			       ccmpl::RGB(1., 1., 1.));
   display.set_ratios({1.}, {1.});
 
   // Let us define our charts (1 here)
@@ -46,10 +41,8 @@ int main(int argc, char* argv[]) {
   display()        += ccmpl::line("'b-'",                                            // extra matplotlib arguments
 				  std::bind(fill_data, _1, std::ref(current_time))); // the filling function
 
-  if(generate_mode) {
-    display.make_python(VIEW_FILE,true); // boolean tells wether we display some GUI or not.
-    return 0;                            // Python script is generated, that's all for generation mode.
-  }
+  // the ccmpl::Main object handles generation here
+  m.generate(display, true); // true means "use GUI"
 
   // Execution
 

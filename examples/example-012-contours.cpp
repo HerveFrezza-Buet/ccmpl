@@ -7,7 +7,7 @@
 
 using namespace std::placeholders;
 
-#define VIEW_FILE "viewer-012-contours.py"
+#define VIEW_PREFIX "viewer-012-contours"
 
 
 double height(double x, double y) {
@@ -56,16 +56,9 @@ void fill_data(std::vector<double>& z,
 
 int main(int argc, char* argv[]) {
 
-
-  // Every program may start like this.
-
-  if(argc != 2) {
-    std::cout << "Usage : " << std::endl
-	      << argv[0] << " generate" << std::endl
-	      << argv[0] << " run | ./" << VIEW_FILE << std::endl;
-    return 0;
-  }
-  bool generate_mode = std::string(argv[1])=="generate";
+  // Let us use a predefined class ccmpl::Main in order to handle the
+  // display in the main function.
+  ccmpl::Main m(argc,argv,VIEW_PREFIX);
 
   // Let us define the layout, a 1x1 grid here. Args are width, height
   // and the grid structure.
@@ -78,13 +71,10 @@ int main(int argc, char* argv[]) {
   display()        += ccmpl::contours("", 9, fill_data); // 9 = label fontsize, 0 removes labels.
   display++;
 
-  if(generate_mode) {
-    display.make_python(VIEW_FILE,false);
-    return 0;                            
-  }
+  // the ccmpl::Main object handles generation here.
+  m.generate(display, false); // no gui, we only generate a single pdf
 
   // Execution
-  
   std::cout << display("#", "ccmpl-012.pdf", ccmpl::nofile())
 	    << ccmpl::stop;
   
