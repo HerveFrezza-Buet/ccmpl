@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
   display()        += ccmpl::lines<10>("'r-', linewidth=1.0",  fill_lines                                       ); // data element #5                                       
 
   if(generate_mode) {
-    display.make_python(VIEW_FILE,false); 
+    display.make_python(VIEW_FILE,true); 
     return 0;                          
   }
 
