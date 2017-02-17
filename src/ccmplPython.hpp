@@ -287,12 +287,12 @@ namespace ccmpl {
       start_data(os);
       os << "\t\tnb_lines = [int(v) for v in sys.stdin.next().split()][0]" << std::endl
 	 << "\t\tif lines" << suffix << " != None :" << std::endl
-	 << "\t\t\tfor line in lines" << suffix << " : line.remove()" << std::endl
-	 << "\t\t\tlines" << suffix << " = []" << std::endl
+	 << "\t\t\tfor line in lines" << suffix << " : line[0].remove()" << std::endl
+	 << "\t\tlines" << suffix << " = []" << std::endl
 	 << "\t\tfor l in range(nb_lines) :" << std::endl
 	 << "\t\t\tx = [float(v) for v in sys.stdin.next().split()]" << std::endl
 	 << "\t\t\ty = [float(v) for v in sys.stdin.next().split()]" << std::endl
-	 << "\t\t\tlines" << suffix << ".append(ax" << suffix << ".plot(x, y, " << add_args(args) << "))" << std::endl;
+	 << "\t\t\tlines" << suffix << ".append(ax" << suffix << ".plot(x, y" << add_args(args) << "))" << std::endl;
       end_data(os);
     }
       
