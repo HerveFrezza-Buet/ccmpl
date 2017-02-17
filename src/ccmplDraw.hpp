@@ -289,11 +289,10 @@ namespace ccmpl {
   //       //
   ///////////
 
-  template<unsigned int NB>
   class Lines : public chart::Data {
   public:
-    std::array<std::vector<Point>,NB> lines;
-    std::function<void (std::array<std::vector<Point>,NB>&)> fill;
+    std::vector<std::vector<Point> > lines;
+    std::function<void (std::vector<std::vector<Point>>&)> fill;
       
     template<typename FILL>
     Lines(const std::string& arglist,
@@ -301,7 +300,7 @@ namespace ccmpl {
     virtual ~Lines() {}
       
     virtual chart::Element* clone() const {
-      Lines<NB>* res = new Lines(args,fill);
+      Lines* res = new Lines(args,fill);
       res->lines = lines;
       return res;
     }
@@ -312,6 +311,7 @@ namespace ccmpl {
 			    
 
     virtual void _print_data(std::ostream& os) {
+      os << lines.size() << std::endl;
       for(auto& points : lines) {
 	for(auto& pt : points) 
 	  os << ' ' << pt.x;
@@ -323,18 +323,18 @@ namespace ccmpl {
     }
 
     virtual void plot_getdata(std::ostream& os) {
-      python::get_lines(os,suffix,NB);
+      python::get_lines(os,suffix,args);
     }
 
     virtual void plot(std::ostream& os) {
-      python::plot_lines(os,suffix,args,NB);
+      python::plot_lines(os,suffix);
     }
       
   };
 
-  template<unsigned int NB, typename FILL>
-  inline Lines<NB> lines(const std::string& arglist,const FILL& f) {
-    return Lines<NB>(arglist,f);
+  template<typename FILL>
+  inline Lines lines(const std::string& arglist,const FILL& f) {
+    return Lines(arglist,f);
   }
 
 
