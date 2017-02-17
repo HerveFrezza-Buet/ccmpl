@@ -276,22 +276,23 @@ namespace ccmpl {
     }
       
     inline void plot_lines(std::ostream& os,
-			   std::string suffix,
-			   std::string args,
-			   unsigned int nb) {
-      for(unsigned int i = 0; i < nb; ++i)
-	os << "line" << suffix << '_' << i << ", = plt.plot([], []" << add_args(args) << ")" << std::endl;
+			   std::string suffix) {
+      os << "ax" << suffix << " = ax" << std::endl
+	 << "lines" << suffix << " = None" << std::endl;
     }
       
     inline void get_lines(std::ostream& os,
 			  std::string suffix,
-			  unsigned int nb) {
+			   std::string args) {
       start_data(os);
-      for(unsigned int i = 0; i < nb; ++i) {
-	os << "\t\tx = [float(v) for v in sys.stdin.next().split()]" << std::endl
-	   << "\t\ty = [float(v) for v in sys.stdin.next().split()]" << std::endl
-	   << "\t\tline" << suffix << '_' << i << ".set_data(x,y)" << std::endl;
-      }
+      os << "\t\tnb_lines = [int(v) for v in sys.stdin.next().split()][0]" << std::endl
+	 << "\t\tif lines" << suffix << " != None :" << std::endl
+	 << "\t\t\tfor line in lines" << suffix << " : line.remove()" << std::endl
+	 << "\t\t\tlines" << suffix << " = []" << std::endl
+	 << "\t\tfor l in range(nb_lines) :" << std::endl
+	 << "\t\t\tx = [float(v) for v in sys.stdin.next().split()]" << std::endl
+	 << "\t\t\ty = [float(v) for v in sys.stdin.next().split()]" << std::endl
+	 << "\t\t\tlines" << suffix << ".append(ax" << suffix << ".plot(x, y, " << add_args(args) << "))" << std::endl;
       end_data(os);
     }
       

@@ -34,9 +34,10 @@ void fill_dots(std::vector<ccmpl::Point>& dots, double& time) {
   }
 }
 
-// As we use further ccmpl::lines<3>(...), we have to provide a
-// function that fills 10 lines.
-void fill_lines(std::array<std::vector<ccmpl::Point>, 10>& lines) {
+void fill_lines(std::vector<std::vector<ccmpl::Point>>& lines) {
+  lines.clear();
+  lines.resize(2+(unsigned int)(rand()/(1.0+RAND_MAX)*8));
+  
   for(auto& line : lines) {
     line.clear();
     auto out = std::back_inserter(line);
@@ -95,7 +96,7 @@ int main(int argc, char* argv[]) {
   display()         = "equal";       
   display()         = {-1., 1., -1., 1.};
   display()         = ccmpl::show_tics(false,false); // hide x and y tics
-  display()        += ccmpl::lines<10>("'r-', linewidth=1.0",  fill_lines                                       ); // data element #5                                       
+  display()        += ccmpl::lines("'r-', linewidth=1.0",  fill_lines                                          ); // data element #5                                       
 
   if(generate_mode) {
     display.make_python(VIEW_FILE,true); 
@@ -107,7 +108,7 @@ int main(int argc, char* argv[]) {
   current_time = 0;
   std::cout << display("#####", ccmpl::nofile(), ccmpl::nofile());   // The 5 data elements are updated.
   for(++current_time; true ; ++current_time)
-    std::cout << display(".###.", ccmpl::nofile(), ccmpl::nofile()); // The data element #1 and #5 are not updated since they do not depend on time.
+    std::cout << display(".####", ccmpl::nofile(), ccmpl::nofile()); // The data element #1 is not updated since it do not depend on time.
 
   return 0;	 
 }
