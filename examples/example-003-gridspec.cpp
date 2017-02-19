@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
   ccmpl::Main m(argc,argv,VIEW_PREFIX);
 
   // Let us define the layout, a 3x2 grid here. Args are width, height
-  // and the grid structure. Only 4 charts will be inserted in the grid.
+  // and the grid structure. Only 5 charts will be inserted in the grid.
   auto display = ccmpl::layout(8.0, 4.0, {  "###"  ,
 	                                    ".##"  }, 
     ccmpl::RGB(1., 1., 1.));                          // Set background to white
@@ -86,24 +86,25 @@ int main(int argc, char* argv[]) {
   display()         = ccmpl::ratio(5,2); // width/height = 5/2 
   display()         = {-3, 3, -1, 1};    
   display()         = ccmpl::show_tics(true,false); // hide y tics 
-  display()        += ccmpl::between("linewidth=2.0, linestyle='--', color='black', facecolor='red', alpha=0.5, interpolate=True",  std::bind(fill_between, _1, std::ref(current_time))); // data element #4
+  display()        += ccmpl::between("linewidth=2.0, linestyle='--', color='black', facecolor='red', alpha=0.5, interpolate=True",
+				     std::bind(fill_between, _1, std::ref(current_time))); // data element #3
   display++;        // Skip to next chart. 
   display()         = {-1.1, 1.1, -1.1, 1.1};    
   display()         = ccmpl::hide_axis(); // hide axis (ticks as well)
   display()         = "equal";                                                  
-  display()        += ccmpl::dots("c='g',lw=1,s=20",          std::bind(fill_dots,  _1, std::ref(current_time))); // data element #3
+  display()        += ccmpl::dots("c='g',lw=1,s=20",          std::bind(fill_dots,  _1, std::ref(current_time))); // data element #4
   display++;        // Skip to next chart.
   display().title   = "Gabor filter";     
   display()         = ccmpl::ratio(5,2); // width/height = 5/2 
   display()         = {-3, 3, -1, 1};    
   display()         = ccmpl::show_tics(true,false); // hide y tics  
-  display()        += ccmpl::line("'b-', linewidth=2.0",      std::bind(fill_gabor, _1, std::ref(current_time))); // data element #4
+  display()        += ccmpl::line("'b-', linewidth=2.0",      std::bind(fill_gabor, _1, std::ref(current_time))); // data element #5
   display++;        // Skip to next chart.
   display().title   = "Crazy lines";     
   display()         = "equal";       
   display()         = {-1., 1., -1., 1.};
   display()         = ccmpl::show_tics(false,false); // hide x and y tics
-  display()        += ccmpl::lines("'r-', linewidth=1.0",  fill_lines                                          ); // data element #5                                       
+  display()        += ccmpl::lines("'r-', linewidth=1.0",  fill_lines                                          ); // data element #6                                       
 
   // the ccmpl::Main object handles generation here.
   m.generate(display, true); // true means "use GUI".
