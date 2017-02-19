@@ -52,6 +52,14 @@ void fill_lines(std::vector<std::vector<ccmpl::Point>>& lines) {
   }
 }
 
+void fill_between(std::vector<ccmpl::YRange>& curve, double& time) {
+  curve.clear();
+  for(double x = -3; x <= 3 ; x += .05) 
+    curve.push_back({x,
+	  std::cos(10*(x+.01*time))*std::exp(-x*x),
+	  0});
+}
+
 int main(int argc, char* argv[]) {
 
   double current_time;
@@ -62,7 +70,7 @@ int main(int argc, char* argv[]) {
 
   // Let us define the layout, a 3x2 grid here. Args are width, height
   // and the grid structure. Only 4 charts will be inserted in the grid.
-  auto display = ccmpl::layout(8.0, 4.0, {  "#.#"  ,
+  auto display = ccmpl::layout(8.0, 4.0, {  "###"  ,
 	                                    ".##"  }, 
     ccmpl::RGB(1., 1., 1.));                          // Set background to white
   display.set_ratios({1.,2.,1.}, {1.,1.});
@@ -74,6 +82,12 @@ int main(int argc, char* argv[]) {
   display()        += ccmpl::line("'b-',zorder=1",            fill_circle                                      ); // data element #1
   display()        += ccmpl::dot ("c='y',lw=1,s=50,zorder=2", std::bind(fill_dot,   _1, std::ref(current_time))); // data element #2
   display++;        // Skip to next chart.
+  display().title   = "Between Gabor and 0";     
+  display()         = ccmpl::ratio(5,2); // width/height = 5/2 
+  display()         = {-3, 3, -1, 1};    
+  display()         = ccmpl::show_tics(true,false); // hide y tics 
+  display()        += ccmpl::between("linewidth=2.0, linestyle='--', color='black', facecolor='red', alpha=0.5, interpolate=True",  std::bind(fill_between, _1, std::ref(current_time))); // data element #4
+  display++;        // Skip to next chart. 
   display()         = {-1.1, 1.1, -1.1, 1.1};    
   display()         = ccmpl::hide_axis(); // hide axis (ticks as well)
   display()         = "equal";                                                  
@@ -97,9 +111,9 @@ int main(int argc, char* argv[]) {
   // Execution
   
   current_time = 0;
-  std::cout << display("#####", ccmpl::nofile(), ccmpl::nofile());   // The 5 data elements are updated.
+  std::cout << display("######", ccmpl::nofile(), ccmpl::nofile());   // The 6 data elements are updated.
   for(++current_time; true ; ++current_time)
-    std::cout << display(".####", ccmpl::nofile(), ccmpl::nofile()); // The data element #1 is not updated since it do not depend on time.
+    std::cout << display(".#####", ccmpl::nofile(), ccmpl::nofile()); // The data element #1 is not updated since it do not depend on time.
 
   return 0;	 
 }

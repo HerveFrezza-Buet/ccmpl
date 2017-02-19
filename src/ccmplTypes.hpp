@@ -140,6 +140,11 @@ namespace ccmpl {
     ColorAt(double xx, double yy,  const RGB& c) : x(xx), y(yy), color(c) {}
     ColorAt(const Point& p, const RGB& c) : x(p.x), y(p.y), color(c) {}
   };
+    
+  struct YRange {
+    double x,y1,y2;
+    YRange(double x, double y1, double y2) : x(x), y1(y1), y2(y2) {}
+  };
 
 
   namespace patch {

@@ -230,6 +230,63 @@ namespace ccmpl {
   }
 
 
+  /////////////
+  //         //
+  // Between //
+  //         //
+  /////////////
+
+ 
+  class Between : public chart::Data {
+  public:
+    std::vector<YRange> points;
+    std::function<void (std::vector<YRange>&)> fill;
+      
+    template<typename FILL>
+    Between(const std::string& arglist,
+	 const FILL& f) : chart::Data(arglist), fill(f) {}
+    virtual ~Between() {}
+      
+    virtual chart::Element* clone() const {
+      Between* res = new Between(args,fill);
+      res->points = points;
+      return res;
+    }
+
+    virtual void refill() {
+      fill(points);
+    }
+			    
+
+    virtual void _print_data(std::ostream& os) {
+      for(auto& pt : points) 
+	os << ' ' << pt.x;
+      os << std::endl;
+      for(auto& pt : points) 
+	os << ' ' << pt.y1;
+      os << std::endl;	
+      for(auto& pt : points) 
+	os << ' ' << pt.y2;
+      os << std::endl;	
+    }
+
+    virtual void plot_getdata(std::ostream& os) {
+      python::get_between(os,suffix,args);
+    }
+
+    virtual void plot(std::ostream& os) {
+      python::plot_between(os,suffix);
+    }
+      
+  };
+
+  template<typename FILL>
+  inline Between between(const std::string& arglist,const FILL& f) {
+    return Between(arglist,f);
+  }
+
+
+  
   //////////
   //      //
   // Line //

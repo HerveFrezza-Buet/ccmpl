@@ -260,6 +260,24 @@ namespace ccmpl {
     inline void close_graph(std::ostream& os) {
       os << std::endl;
     }
+
+    inline void plot_between(std::ostream& os,
+			  std::string suffix) {
+      os << "ax" << suffix << " = ax" << std::endl
+	 << "between" << suffix << " = None" << std::endl;
+    }
+      
+    inline void get_between(std::ostream& os, 
+			 std::string suffix,
+			 std::string args) {
+      start_data(os);
+      os << "\t\tx  = [float(v) for v in sys.stdin.next().split()]" << std::endl
+	 << "\t\ty1 = [float(v) for v in sys.stdin.next().split()]" << std::endl
+	 << "\t\ty2 = [float(v) for v in sys.stdin.next().split()]" << std::endl
+	 << "\t\tif between" << suffix << " != None : between" << suffix << ".remove()" << std::endl
+	 << "\t\tbetween" << suffix << " = ax" << suffix << ".fill_between(x,y1,y2" << add_args(args) << ")" << std::endl;
+      end_data(os);
+    }
       
     inline void plot_line(std::ostream& os,
 			  std::string suffix,
