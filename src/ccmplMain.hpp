@@ -1,8 +1,6 @@
 #pragma once
 
 #include <string>
-#include <cstdlib>
-#include <ctime>
 
 namespace ccmpl {
   class Main {
@@ -19,7 +17,6 @@ namespace ccmpl {
     Main& operator=(const Main&&)  = delete;
 
     Main(int argc, char** argv, const std::string& prefix) {
-      srand(std::time(0));
       pyfile = prefix+".py";
       moviefile = prefix+".mp4";
       if(argc != 2) {
