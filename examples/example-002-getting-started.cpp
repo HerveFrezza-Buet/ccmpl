@@ -44,10 +44,11 @@ int main(int argc, char* argv[]) {
   display().xtitle  = "space";
   display().ytitle  = "amplitude";
   display()         = "equal";  // or "auto" or ccmpl::ratio(4,3)...  
-  display()         = {-5, 5, -1, 1};      
-  display()        += ccmpl::line("'b-', linewidth=2.0", std::bind(fill_data, _1, std::ref(current_time))); // data element #1
-  display()        += ccmpl::hbar("'r'",                 std::bind(fill_hbar, _1, std::ref(current_time))); // data element #2
-  display()        += ccmpl::vbar("'g'",                 std::bind(fill_vbar, _1, std::ref(current_time))); // data element #3
+  display()         = {-5, 5, -1, 1};
+  display()         = ccmpl::legend("loc = 'lower right'"); // sets the legend
+  display()        += ccmpl::line("'b-', linewidth=2.0, label='Gabor'", std::bind(fill_data, _1, std::ref(current_time))); // data element #1
+  display()        += ccmpl::hbar("'r'",                 std::bind(fill_hbar, _1, std::ref(current_time)));                // data element #2
+  display()        += ccmpl::vbar("'g'",                 std::bind(fill_vbar, _1, std::ref(current_time)));                // data element #3
 
   // the ccmpl::Main object handles generation here.
   m.generate(display, true); // true means "use GUI".

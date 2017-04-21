@@ -175,6 +175,16 @@ namespace ccmpl {
       bool show_axis;
     };
 
+    struct Legend{
+      bool show;
+      std::string args;
+      Legend() : show(false), args() {}
+      Legend(bool show) : show(show), args() {}
+      Legend(const std::string& args) : show(true), args(args) {}
+      Legend(const Legend&) = default;
+      Legend& operator=(const Legend&) = default;
+    };
+
     struct Ratio {
       double num;
       double denom;
@@ -211,6 +221,14 @@ namespace ccmpl {
     return {num, denom};
   }
 
+  chart::Legend legend() {
+    return chart::Legend(true);
+  }
+  
+  chart::Legend legend(const std::string& args) {
+    return chart::Legend(args);
+  }
+
   namespace chart {
 
     class Graph : public Elements {
@@ -231,6 +249,7 @@ namespace ccmpl {
       bool use_x_scientific;
       std::string grid_pos;
       bool is_3d;
+      Legend legend;
       
       Graph(const std::string& pos) 
 	: title(""), xtitle(""), ytitle(""), ztitle(""), aspect("auto"), ratio(),
@@ -242,7 +261,8 @@ namespace ccmpl {
 	  show_ztics(true),
 	  show_axis(true),
 	  autoscale_x(false), autoscale_y(false),use_x_offset(true), use_x_scientific(false), grid_pos(pos),
-	  is_3d(false) {}
+	  is_3d(false),
+	  legend() {}
 
 
       virtual Element* clone() const {
@@ -307,7 +327,7 @@ namespace ccmpl {
 			   autoscale_x, autoscale_y,
 			   use_x_offset, use_x_scientific, grid_pos, is_3d);
 	this->Elements::plot(os);
-	python::close_graph(os);
+	python::close_graph(os, suffix, legend.show, legend.args);
       }
 
       void operator=(bool show_values_on_axis) {
@@ -327,6 +347,11 @@ namespace ccmpl {
 	ratio = aspect_ratio;
 	aspect = "";
       }
+      
+      void operator=(const Legend& l) {
+	legend = l;
+      }
+      
       void operator=(const char* aspect_label) {
 	aspect = std::string(aspect_label);
 	ratio = Ratio();

@@ -254,10 +254,12 @@ namespace ccmpl {
       }
       else
 	os << "ax.axis('off')" << std::endl;
-      os << "ax" << suffix << " = ax " << std::endl;
     }
       
-    inline void close_graph(std::ostream& os) {
+    inline void close_graph(std::ostream& os, const std::string& suffix, bool show_legend, const std::string& legend_args) {
+      if(show_legend)
+	os << "ax.legend(" << legend_args << ")" << std::endl;
+      os << "ax" << suffix << " = ax " << std::endl;
       os << std::endl;
     }
 
