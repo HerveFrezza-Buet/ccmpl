@@ -462,6 +462,9 @@ namespace ccmpl {
       virtual ~Layout() {
       }
 
+      Layout(const Layout&) = delete;
+      Layout& operator=(const Layout&) = delete;
+
       virtual Element* clone() const {
 	std::cerr << "Layout cannot be cloned" << std::endl;
 	return (Element*)0;
