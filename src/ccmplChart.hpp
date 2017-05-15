@@ -28,6 +28,7 @@
 
 #include <vector>
 #include <list>
+#include <iterator>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -405,7 +406,26 @@ namespace ccmpl {
       int png_dpi;
       std::list<double> wratios, hratios;
 
+      
     public:
+      
+      Layout(const Layout& other)
+	: width(other.width), height(other.height),
+	  xsize(other.xsize), ysize(other.ysize),
+	  facecolor(other.facecolor),
+	  graphs(), current(),
+	  pdf_name(other.pdf_name), 
+	  png_name(other.png_name),
+	  png_dpi(other.png_dpi),
+	  wratios(other.wratios), hratios(other.hratios) {
+	auto out = std::back_inserter(graphs);
+	for(auto g_ptr: graphs)
+	  *(out++) = reinterpret_cast<Graph*>(g_ptr->clone());
+	current = graphs.begin();
+      }
+      
+      Layout& operator=(const Layout&) = delete;
+
 
       /**
        * layout can contain '.' (no graph), '#' (some graph here), '>' (colspan = 2), 'V' (linespan = 2), 'X' (2x2 span).
@@ -461,9 +481,6 @@ namespace ccmpl {
 
       virtual ~Layout() {
       }
-
-      Layout(const Layout&) = delete;
-      Layout& operator=(const Layout&) = delete;
 
       virtual Element* clone() const {
 	std::cerr << "Layout cannot be cloned" << std::endl;
