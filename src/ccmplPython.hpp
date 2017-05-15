@@ -182,6 +182,8 @@ namespace ccmpl {
 			   bool show_xtics,
 			   bool show_ytics,
 			   bool show_ztics,
+			   std::string xticks_position,
+			   std::string yticks_position,
 			   bool show_axis,
 			   bool autoscale_x,
 			   bool autoscale_y,
@@ -248,8 +250,14 @@ namespace ccmpl {
       if(is_3d && ztitle != "")
 	os << "ax.set_zlabel('" << ztitle << "')" << std::endl;
       if(show_axis) {
-	if(!show_xtics) os << "ax.get_xaxis().set_ticks([])" << std::endl;
-	if(!show_ytics) os << "ax.get_yaxis().set_ticks([])" << std::endl;
+	if(show_xtics)
+	  os << "ax.get_xaxis().set_ticks_position('" << xticks_position << "')" << std::endl;
+	else
+	  os << "ax.get_xaxis().set_ticks([])" << std::endl;
+	if(show_ytics) 
+	  os << "ax.get_yaxis().set_ticks_position('" << yticks_position << "')" << std::endl;
+	else
+	  os << "ax.get_yaxis().set_ticks([])" << std::endl;
 	if(is_3d && !show_ztics) os << "ax.zaxis.set_major_formatter(plt.NullFormatter())" << std::endl;
       }
       else

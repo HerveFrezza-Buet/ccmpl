@@ -243,6 +243,7 @@ namespace ccmpl {
       bool show_xtics;
       bool show_ytics;
       bool show_ztics;
+      std::string xticks_position, yticks_position;
       bool show_axis;
       bool autoscale_x;
       bool autoscale_y;
@@ -260,6 +261,8 @@ namespace ccmpl {
 	  show_xtics(true),
 	  show_ytics(true),
 	  show_ztics(true),
+	  xticks_position("default"),
+	  yticks_position("default"),
 	  show_axis(true),
 	  autoscale_x(false), autoscale_y(false),use_x_offset(true), use_x_scientific(false), grid_pos(pos),
 	  is_3d(false),
@@ -279,6 +282,8 @@ namespace ccmpl {
 	res->show_xtics       = show_xtics;
 	res->show_ytics       = show_ytics;
 	res->show_ztics       = show_ztics;
+	res->xticks_position  = xticks_position;
+	res->yticks_position  = yticks_position;
 	res->show_axis        = show_axis;
 	res->autoscale_x      = autoscale_x;
 	res->autoscale_y      = autoscale_y;
@@ -324,7 +329,9 @@ namespace ccmpl {
 			   suffix,
 			   xmin,xmax,ymin,ymax,zmin,zmax,
 			   title,xtitle,ytitle,ztitle,aspect,
-			   show_xtics, show_ytics, show_ztics, show_axis,
+			   show_xtics, show_ytics, show_ztics,
+			   xticks_position, yticks_position,
+			   show_axis,
 			   autoscale_x, autoscale_y,
 			   use_x_offset, use_x_scientific, grid_pos, is_3d);
 	this->Elements::plot(os);
