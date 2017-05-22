@@ -176,6 +176,11 @@ namespace ccmpl {
       bool show_axis;
     };
 
+    struct NbTics {
+      std::string axis;
+      unsigned int nb;
+    };
+
     struct Legend{
       bool show;
       std::string args;
@@ -206,27 +211,39 @@ namespace ccmpl {
     };
   }
 
-  chart::Tics show_tics(bool x, bool y, bool z=false) {
+  inline chart::NbTics nb_xtics(unsigned int nb) {
+    return {std::string("x"), nb};
+  }
+  
+  inline chart::NbTics nb_ytics(unsigned int nb) {
+    return {std::string("y"), nb};
+  }
+  
+  inline chart::NbTics nb_ztics(unsigned int nb) {
+    return {std::string("z"), nb};
+  }
+
+  inline chart::Tics show_tics(bool x, bool y, bool z=false) {
     return {x,y,z,true};
   }
 
-  chart::Tics hide_axis() {
+  inline chart::Tics hide_axis() {
     return {false, false, false, false};
   }
 
-  chart::Ratio ratio(double num) {
+  inline chart::Ratio ratio(double num) {
     return {num, 1.0};
   }
 
-  chart::Ratio ratio(double num, double denom) {
+  inline chart::Ratio ratio(double num, double denom) {
     return {num, denom};
   }
 
-  chart::Legend legend() {
+  inline chart::Legend legend() {
     return chart::Legend(true);
   }
   
-  chart::Legend legend(const std::string& args) {
+  inline chart::Legend legend(const std::string& args) {
     return chart::Legend(args);
   }
 
@@ -252,6 +269,7 @@ namespace ccmpl {
       std::string grid_pos;
       bool is_3d;
       Legend legend;
+      std::list<chart::NbTics> nb_tics;
       
       Graph(const std::string& pos) 
 	: title(""), xtitle(""), ytitle(""), ztitle(""), aspect("auto"), ratio(),
@@ -266,7 +284,8 @@ namespace ccmpl {
 	  show_axis(true),
 	  autoscale_x(false), autoscale_y(false),use_x_offset(true), use_x_scientific(false), grid_pos(pos),
 	  is_3d(false),
-	  legend() {}
+	  legend(),
+	  nb_tics() {}
 
 
       virtual Element* clone() const {
@@ -358,6 +377,11 @@ namespace ccmpl {
       
       void operator=(const Legend& l) {
 	legend = l;
+      }
+      
+      
+      void operator=(const NbTics& nbt) {
+	nb_tics.push_back(nbt);
       }
       
       void operator=(const char* aspect_label) {

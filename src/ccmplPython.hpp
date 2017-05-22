@@ -88,6 +88,8 @@ namespace ccmpl {
       if(!gui)
 	os << "#";
       os << "plt.ion()" << std::endl;
+      os << "plt.rc('text', usetex=True)" << std::endl;
+      os << "plt.rc('font', family='serif')" << std::endl;
     }
 
     inline void close_plot(std::ostream& os) {
@@ -242,13 +244,13 @@ namespace ccmpl {
       if(aspect != "")
 	os << "ax.set_aspect(" << aspect << ")" << std::endl;
       if(title != "")
-	os << "ax.set_title('" << title << "')" << std::endl;
+	os << "ax.set_title(r'" << title << "')" << std::endl;
       if(xtitle != "")
-	os << "ax.set_xlabel('" << xtitle << "')" << std::endl;
+	os << "ax.set_xlabel(r'" << xtitle << "')" << std::endl;
       if(ytitle != "")
-	os << "ax.set_ylabel('" << ytitle << "')" << std::endl;
+	os << "ax.set_ylabel(r'" << ytitle << "')" << std::endl;
       if(is_3d && ztitle != "")
-	os << "ax.set_zlabel('" << ztitle << "')" << std::endl;
+	os << "ax.set_zlabel(r'" << ztitle << "')" << std::endl;
       if(show_axis) {
 	if(show_xtics)
 	  os << "ax.get_xaxis().set_ticks_position('" << xticks_position << "')" << std::endl;
