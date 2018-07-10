@@ -8,6 +8,9 @@ namespace ccmpl {
     bool generate_mode, movie;
     std::string pyfile, moviefile;
 
+    Main(const std::string& prefix)
+      : pyfile(prefix+".py"), moviefile(prefix+".mp4") {}
+
   public:
 
     Main           (            )  = delete;
@@ -16,9 +19,8 @@ namespace ccmpl {
     Main& operator=(const Main& )  = delete;
     Main& operator=(const Main&&)  = delete;
 
-    Main(int argc, char** argv, const std::string& prefix) {
-      pyfile = prefix+".py";
-      moviefile = prefix+".mp4";
+    Main(int argc, char** argv, const std::string& prefix)
+      : Main(prefix) {
       if(argc != 2) {
 	std::cerr << std::endl
 		  << "Usage : " << std::endl
@@ -32,6 +34,12 @@ namespace ccmpl {
       }
       generate_mode = std::string(argv[1])=="movie" || std::string(argv[1])=="display";
       movie         = std::string(argv[1])=="movie";
+    }
+
+    Main(bool generate_mode, bool movie, const std::string& prefix)
+      : Main(prefix) {
+      this->generate_mode = generate_mode;
+      this->movie         = movie;
     }
 
     void generate(ccmpl::chart::Layout& display, bool use_gui) {
