@@ -285,6 +285,76 @@ namespace ccmpl {
     return Between(arglist,f);
   }
 
+  /////////
+  //     //
+  // Pie //
+  //     //
+  /////////
+
+ 
+  class Pie : public chart::Data {
+  public:
+
+    struct Wedge {
+      double      value;    //!< The value of the wedge
+      RGB         color;    //!< The color of the wedge
+      std::string label;    //!< The label of the wedge
+      double      explode;  //!< The fraction of the radius with which to offset each wedge.
+      Wedge(double value, const RGB& color, const std::string& label, double explode)
+	: value(value), color(color), label(label), explode(explode) {}
+    };
+    
+    std::vector<Wedge> wedges;
+    std::function<void (std::vector<Wedge>&)> fill;
+      
+    template<typename FILL>
+    Pie(const std::string& arglist,
+	 const FILL& f) : chart::Data(arglist), fill(f) {}
+    virtual ~Pie() {}
+      
+    virtual chart::Element* clone() const {
+      Pie* res = new Pie(args,fill);
+      res->wedges = wedges;
+      return res;
+    }
+
+    virtual void refill() {
+      fill(wedges);
+    }
+			    
+
+    virtual void _print_data(std::ostream& os) {
+      for(auto& w : wedges) 
+	os << ' ' << w.value;
+      os << std::endl;
+      
+      for(auto& w : wedges) 
+	os << w.color.r << ' ' << w.color.g << ' ' << w.color.b << std::endl;
+
+      for(auto& w : wedges)
+	os << w.label << std::endl;
+      
+      
+      for(auto& w : wedges) 
+	os << ' ' << w.explode;
+      os << std::endl;
+    }
+
+    virtual void plot_getdata(std::ostream& os) {
+      python::get_pie(os,suffix, args);
+    }
+
+    virtual void plot(std::ostream& os) {
+      python::plot_pie(os,suffix);
+    }
+      
+  };
+
+  template<typename FILL>
+  inline Pie pie(const std::string& arglist,const FILL& f) {
+    return Pie(arglist,f);
+  }
+
 
   
   //////////

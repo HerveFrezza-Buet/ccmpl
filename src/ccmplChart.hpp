@@ -588,11 +588,6 @@ namespace ccmpl {
 
 	file.close();
 	
-	std::cout << std::endl
-		  << "File \"" << filename << "\" generated." << std::endl
-		  << "You may need to set the execution flag for further use:" << std::endl
-		  << "chmod +x " << filename << std::endl
-		  << std::endl;
       }
 
       void make_movie_python(std::string filename, bool use_gui, std::string writer_name,
@@ -620,12 +615,6 @@ namespace ccmpl {
 	python::close_movie(file);
 
 	file.close();
-	
-	std::cout << std::endl
-		  << "File \"" << filename << "\" generated." << std::endl
-		  << "You may need to set the execution flag for further use:" << std::endl
-		  << "chmod +x " << filename << std::endl
-		  << std::endl;
       }
     };
 

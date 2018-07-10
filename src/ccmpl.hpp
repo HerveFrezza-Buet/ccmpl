@@ -47,4 +47,6 @@
  * @example example-009-image.cpp
  * @example example-010-movie.cpp
  * @example example-011-text.cpp
+ * @example example-012-contours.cpp
+ * @example example-013-pie.cpp
  */
