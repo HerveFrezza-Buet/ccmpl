@@ -21,7 +21,15 @@ using namespace std::placeholders;
 
 #define NB_HISTO_SAMPLES 500
 
-void fill_histogram(std::vector<ccmpl::Point>& data, std::mt19937& generator) {
+void fill_histogram_1d(std::vector<double>& data, std::mt19937& generator) {
+  data.clear();
+
+  std::normal_distribution<double> gaussian(0.0,1.0);
+  for(unsigned int i = 0; i < NB_HISTO_SAMPLES; ++i)
+    data.push_back(gaussian(generator));
+}
+
+void fill_histogram_2d(std::vector<ccmpl::Point>& data, std::mt19937& generator) {
   data.clear();
 
   std::normal_distribution<double> gaussian(0.0,1.0);
@@ -39,8 +47,7 @@ int main(int argc, char* argv[]) {
   std::mt19937       gen(rd());
   
 
-  std::string update_pattern = "";
-  auto display = ccmpl::layout(12.0, 6.0, {"##"});
+  auto display = ccmpl::layout(12.0, 12.0, {"##", ">."});
 
   std::string histo2d_args = std::string("cmap='jet', vmin=")
     + std::to_string(Z_MIN)
@@ -52,25 +59,33 @@ int main(int argc, char* argv[]) {
   display()         = ccmpl::show_tics(true,true); 
   display()         = "equal";                                                  
   display()        += ccmpl::histo2d(histo2d_args, 
-				     std::bind(fill_histogram, _1, std::ref(gen)),
+				     std::bind(fill_histogram_2d, _1, std::ref(gen)),
 				     X_MIN, X_MAX, NB_X_BINS,
-				     Y_MIN, Y_MAX, NB_Y_BINS);  update_pattern += '#';
+				     Y_MIN, Y_MAX, NB_Y_BINS); 
   display++;
   display().title   = "Histogram 3D";
   display()         = {X_MIN, X_MAX, Y_MIN, Y_MAX, Z_MIN, Z_MAX};    
   display()         = ccmpl::show_tics(false,false,true); 
   display()         = "equal";                                                  
   display()        += ccmpl::histo3d("color='#aaaaff', zsort='average', lw=.5", 
-				     std::bind(fill_histogram, _1, std::ref(gen)),
+				     std::bind(fill_histogram_2d, _1, std::ref(gen)),
 				     X_MIN, X_MAX, NB_X_BINS,
-				     Y_MIN, Y_MAX, NB_Y_BINS);  update_pattern += '#';
+				     Y_MIN, Y_MAX, NB_Y_BINS); 
+  display++;
+  display().title   = "Histogram 1D";
+  display()         = {X_MIN, X_MAX, 0, 100};    
+  display()         = ccmpl::show_tics(true,true); 
+  display()         = ccmpl::grid("linestyle='--', color='b', alpha=.1"); 
+  display()        += ccmpl::histo1d("color=(1,.5,.6), linewidth=1, edgecolor='k'",
+				     std::bind(fill_histogram_1d, _1, std::ref(gen)),
+				     X_MIN, X_MAX, NB_X_BINS); 
 
   // the ccmpl::Main object handles generation here.
   m.generate(display, false); // no gui, we only generate a single pdf
 
   // Execution
   
-  std::cout << display(update_pattern, "ccmpl-007.pdf", ccmpl::nofile())
+  std::cout << display("###", "ccmpl-007.pdf", ccmpl::nofile())
 	    << ccmpl::stop;
   return 0;	 
 }

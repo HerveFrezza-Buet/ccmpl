@@ -209,6 +209,11 @@ namespace ccmpl {
 	return num != 0 && denom != 0;
       }
     };
+
+    struct GridInfo {
+      std::string info;
+      GridInfo(const std::string& info) : info(info) {}
+    };
   }
 
   inline chart::NbTics nb_xtics(unsigned int nb) {
@@ -247,6 +252,10 @@ namespace ccmpl {
     return chart::Legend(args);
   }
 
+  inline chart::GridInfo grid(const std::string& info) {
+    return chart::GridInfo(info);
+  }
+
   namespace chart {
 
     class Graph : public Elements {
@@ -270,6 +279,7 @@ namespace ccmpl {
       bool is_3d;
       Legend legend;
       std::list<chart::NbTics> nb_tics;
+      std::string grid_info;
       
       Graph(const std::string& pos) 
 	: title(""), xtitle(""), ytitle(""), ztitle(""), aspect("auto"), ratio(),
@@ -285,7 +295,8 @@ namespace ccmpl {
 	  autoscale_x(false), autoscale_y(false),use_x_offset(true), use_x_scientific(false), grid_pos(pos),
 	  is_3d(false),
 	  legend(),
-	  nb_tics() {}
+	  nb_tics(),
+	  grid_info() {}
 
 
       virtual Element* clone() const {
@@ -309,6 +320,9 @@ namespace ccmpl {
 	res->use_x_offset     = use_x_offset;
 	res->use_x_scientific = use_x_scientific;
 	res->is_3d            = is_3d;
+	res->legend           = legend;
+	res-> nb_tics         = nb_tics;
+	res->grid_info        = grid_info;
 	return res;
       }
 
@@ -330,6 +344,9 @@ namespace ccmpl {
 	  os << "\tax" << suffix << ".set_xlim(xmin" << suffix << ", xmax" << suffix << ')' << std::endl;
 	  os << "\tax" << suffix << ".autoscale_view(tight=True, scalex=False, scaley=True)" << std::endl;
 	}
+
+	if(grid_info != "")
+	  os << "\tax" << suffix << ".grid(" << grid_info << ')' << std::endl;
       }
 
       virtual void plot(std::ostream& os) {
@@ -379,6 +396,9 @@ namespace ccmpl {
 	legend = l;
       }
       
+      void operator=(const GridInfo& gi) {
+	grid_info = gi.info;
+      }
       
       void operator=(const NbTics& nbt) {
 	nb_tics.push_back(nbt);

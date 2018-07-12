@@ -703,6 +703,83 @@ namespace ccmpl {
   }
 
 
+  /////////////
+  //         //
+  // Histo1d // 
+  //         //
+  /////////////
+
+
+  class Histo1d : public chart::Data {
+  public:
+
+    std::function<void (std::vector<double>&)> fill;
+    std::vector<double> data;
+    double min, max;
+    unsigned int nb;
+      
+      
+    template<typename FILL>
+    Histo1d(const std::string& arglist, 
+	    const FILL& f,
+	    double min, double max, unsigned int nb_bins) 
+      : chart::Data(arglist), fill(f),
+	data(),
+	min(min), max(max), nb(nb_bins){}
+    virtual ~Histo1d() {}
+      
+    virtual void _print_data(std::ostream& os) {
+      double coef = (max - min)/nb;
+      double norm = 1/coef;
+
+      // bar width
+      os << coef << std::endl;
+      
+      // bin centers
+      for(unsigned int b = 0; b < nb; ++b)
+	os << ' ' << min + (b+.5)*coef;
+      os << std::endl;
+
+      // Histogram computation
+      std::vector<unsigned int> h(nb, 0);
+      for(auto d : data)
+	if(min <= d && d < max)
+	  ++(h[(int)((d-min)*norm)]);
+
+      for(auto bar : h)
+	os << ' ' << bar;
+      os << std::endl;
+      
+    }
+
+    virtual chart::Element* clone() const {
+      Histo1d* res = new Histo1d(args,fill,
+				 min,max,nb);
+      
+      res->data = data;
+      return res;
+    }
+
+    virtual void refill() {
+      fill(data);
+    }
+
+    virtual void plot_getdata(std::ostream& os) {
+      python::get_histo1d(os,suffix, args);
+    }
+
+    virtual void plot(std::ostream& os) {
+      python::plot_histo1d(os,suffix);
+    }
+      
+  };
+
+  template<typename FILL>
+  inline Histo1d histo1d(const std::string& arglist, const FILL& f,
+			 double min, double max, unsigned int nb_bins) {
+    return Histo1d(arglist,f,
+		   min,max,nb_bins);
+  }
   
 
   /////////////

@@ -464,6 +464,26 @@ namespace ccmpl {
       end_data(os);
     }
       
+    inline void plot_histo1d(std::ostream& os,
+			     const std::string& suffix) {
+      os << "ax" << suffix << " = ax" << std::endl
+	 << "histo1d" << suffix << " = None" << std::endl;
+    }
+    
+    inline void get_histo1d(std::ostream& os,
+			    const std::string& suffix,
+			    const std::string& args) {
+      start_data(os);
+      os << "\t\tbar_width   = float(sys.stdin.readline())" << std::endl
+	 << "\t\tbar_centers = [float(v) for v in sys.stdin.readline().split()]" << std::endl
+	 << "\t\tbar_heights = [float(v) for v in sys.stdin.readline().split()]" << std::endl
+	 << "\t\tif histo1d" << suffix << " != None : histo1d" << suffix << ".remove()" << std::endl
+	 << "\t\thisto1d" << suffix << " = ax" << suffix << ".bar(bar_centers, bar_heights, bar_width, align='center'" << add_args(args) << ")" << std::endl;
+      end_data(os);
+      
+    }
+
+    
     inline void plot_histo3d(std::ostream& os,
 			     const std::string& suffix,
 			     double xmin, double xmax, unsigned int nbx,
