@@ -355,9 +355,10 @@ namespace ccmpl {
 
 	// Let us process the aspect properly.
 	if(ratio.is_valid()) {
-	  double r = (xmax-xmin)/(ymax-ymin);
-	  r *= ratio.denom/ratio.num;
-	  aspect = std::to_string(r);
+	  // double r = (xmax-xmin)/(ymax-ymin);
+	  // r *= ratio.denom/ratio.num;
+	  // aspect = std::to_string(r);
+	  aspect = std::to_string(ratio.denom/(double)ratio.num);
 	}
 	else
 	  aspect = std::string("'") + aspect + std::string("'");
