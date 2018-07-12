@@ -76,7 +76,7 @@ int main(int argc, char* argv[]) {
   display.set_ratios({1.,2.,1.}, {1.,1.});
 
   // Let us define our charts (3 here, with 1, 2 and 1 data elements respectively)
-  display()         = {-1.1, 1.1, -1.1, 1.1};    
+  display()         = {-1.1, 1.1, -1.1, 1.1};
   display()         = ccmpl::show_tics(false,false); // hide x and y tics
   display()         = "equal";    
   display()        += ccmpl::line("'b-',zorder=1",            fill_circle                                      ); // data element #1

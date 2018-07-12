@@ -14,7 +14,7 @@ void fill_data(std::vector<ccmpl::Point>& curve, double& time) {
 
   curve.clear();
   for(double x = -3; x <= 3 ; x += .05) 
-    curve.push_back({x,std::cos(10*(x+.01*time))*std::exp(-x*x)});
+    curve.push_back({x,10*std::cos(.01*time)*std::cos(10*(x+.01*time))*std::exp(-x*x)});
 }
 
 int main(int argc, char* argv[]) {
@@ -36,8 +36,9 @@ int main(int argc, char* argv[]) {
   display().title   = "Gabor filter";                                                // set chart titles
   display().xtitle  = "space";
   display().ytitle  = "amplitude";
-  display()         = "equal";                                                       // this sets the axis aspect argument.
+  display()         = "auto";                                                        // this sets the axis aspect argument.
   display()         = {-5, 5, -1, 1};                                                // set xmin,xmax,ymin,ymax
+  display()         = ccmpl::autoscale::Y;                                           // We autoscale on Y only. X, XY are also available.
   display()        += ccmpl::line("'b-'",                                            // extra matplotlib arguments
 				  std::bind(fill_data, _1, std::ref(current_time))); // the filling function
 

@@ -216,6 +216,8 @@ namespace ccmpl {
     };
   }
 
+  enum class autoscale :  std::uint8_t {X, Y, XY};
+
   inline chart::NbTics nb_xtics(unsigned int nb) {
     return {std::string("x"), nb};
   }
@@ -402,6 +404,23 @@ namespace ccmpl {
       
       void operator=(const NbTics& nbt) {
 	nb_tics.push_back(nbt);
+      }
+      
+      void operator=(autoscale as) {
+	switch(as) {
+	case autoscale::X:
+	  autoscale_x = true;
+	  autoscale_y = false;
+	  break;
+	case autoscale::Y:
+	  autoscale_x = false;
+	  autoscale_y = true;
+	  break;
+	case autoscale::XY:
+	  autoscale_x = true;
+	  autoscale_y = true;
+	  break;
+	}
       }
       
       void operator=(const char* aspect_label) {
