@@ -87,15 +87,13 @@ int main(int argc, char* argv[]) {
   // Let us define our charts (2 here)
   // Gray image
   display().title   = "Gray Image  ";                                                    // set chart titles
-  display()         = {-3, 3, -3, 3};                                                 // set xmin,xmax,ymin,ymax; actually, they will be overwritten by the ccmpl::image
-  display()         = "equal";
+  display()         = ccmpl::view2d({-3, 3}, {-3, 3}, ccmpl::aspect::equal, ccmpl::span::placeholder); 
   display()        += ccmpl::image("cmap='binary', interpolation='bilinear', clim=(0,1)", std::bind(fill_data, _1, _2, _3, _4, _5, std::ref(current_time))); // the filling function
   display++;
 
   // RGB Image
-  display().title   = " RGB Image ";                                                    // set chart titles
-  display()         = {-3, 3, -3, 3};                                                 // set xmin,xmax,ymin,ymax; actually, they will be overwritten by the ccmpl::image
-  display()         = "equal";
+  display().title   = " RGB Image ";                     
+  display()         = ccmpl::view2d({-3, 3}, {-3, 3}, ccmpl::aspect::equal, ccmpl::span::placeholder); 
   display()        += ccmpl::image("interpolation='bilinear'", std::bind(fill_data_rgb, _1, _2, _3, _4, _5, std::ref(current_time))); // the filling function
 
   // the ccmpl::Main object handles generation here.
@@ -105,7 +103,7 @@ int main(int argc, char* argv[]) {
 
   // ccmpl::filename("img",i,"png") helps to define "img-%06d.png" names. Use ccmpl::nofile() if no image files are needed.
 
-  for(current_time = 0; current_time < 1000; ++current_time)
+  for(current_time = 0; current_time < 500; ++current_time)
     std::cout << display("##", // Use # or - for each data element for trigerring its update.
 			 ccmpl::nofile(),  // name of the generated pdf file
 			 ccmpl::nofile()); // name of the generated png file. 

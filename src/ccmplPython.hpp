@@ -627,7 +627,7 @@ namespace ccmpl {
 	 << "\t\t\tp.remove()" << std::endl
 	 << "\t\tcommand = sys.stdin.readline()" << std::endl
 	 << "\t\tax = ax" << suffix << std::endl
-	 << "\t\texec command # allocates patches in ax, stored in tmp." << std::endl
+	 << "\t\texec(command) # allocates patches in ax, stored in tmp." << std::endl
 	 << "\t\tpatches" << suffix << " = tmp" << std::endl
 	 << "\t\tfor p in patches" << suffix << ':' << std::endl
 	 << "\t\t\tax.add_patch(p)" << std::endl;
@@ -650,8 +650,8 @@ namespace ccmpl {
       os << "\t\tx = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl;
       os << "\t\ty = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl;
       os << "\t\trawz = [float(v) for v in sys.stdin.readline().split()]" << std::endl;
-      os << "\t\twidth, depth = map(int,sys.stdin.readline().split())" << std::endl;
-      os << "\t\tim = np.array(rawz).reshape((len(rawz)/(width*depth), width, depth))" << std::endl;
+      os << "\t\twidth, depth = [int(v) for v in sys.stdin.readline().split()]" << std::endl;
+      os << "\t\tim = np.array(rawz).reshape((len(rawz)//(width*depth), width, depth))" << std::endl;
       os << "\t\taxim" << suffix << ".set_data(x, y, im)" << std::endl;
       os << "\t\taxim" << suffix << ".set_extent((x.min(), x.max(), y.min(), y.max()))" << std::endl;
       os << "\t\tax"   << suffix << ".set_xlim((x.min(), x.max()))" << std::endl;
@@ -702,7 +702,7 @@ namespace ccmpl {
       
     inline void get_text(std::ostream& os, const std::string& suffix) {
       start_data(os);
-      os << "\t\txy = map(float, sys.stdin.readline().split())" << std::endl
+      os << "\t\txy = [float(v) for v in sys.stdin.readline().split()]" << std::endl
 	 << "\t\ttext = sys.stdin.readline().split()[0]" << std::endl
 	 << "\t\ttext" << suffix << ".set_position(xy)" << std::endl
 	 << "\t\ttext" << suffix << ".set_text(text)" << std::endl;

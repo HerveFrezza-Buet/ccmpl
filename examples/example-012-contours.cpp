@@ -66,8 +66,7 @@ int main(int argc, char* argv[]) {
   display.set_ratios({4.}, {3.});
 
   display().title   = "Contours  ";  
-  display()         = {-XRADIUS, XRADIUS, -YRADIUS, YRADIUS};  
-  display()         = "equal";
+  display()         = ccmpl::view2d({-XRADIUS, XRADIUS}, {-YRADIUS, YRADIUS}, ccmpl::aspect::equal, ccmpl::span::placeholder); 
   display()        += ccmpl::contours("", 9, fill_data); // 9 = label fontsize, 0 removes labels.
   display++;
 

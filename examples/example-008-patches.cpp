@@ -74,8 +74,7 @@ int main(int argc, char* argv[]) {
 
   // Let us define our charts (1 here)
   display().title   = "Patches    ";                                                    // set chart titles
-  display()         = {-6, 3, -3, 3};                                                   // set xmin,xmax,ymin,ymax
-  display()         = "equal";
+  display()         = ccmpl::view2d({-6, 3}, {-3, 3}, ccmpl::aspect::equal, ccmpl::span::placeholder); 
   display()        += ccmpl::patches(std::bind(fill_data, _1, std::ref(current_time))); // the filling function
 
   // the ccmpl::Main object handles generation here.

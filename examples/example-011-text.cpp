@@ -34,8 +34,7 @@ int main(int argc, char* argv[]) {
   display().title   = "Text demo";                                                // set chart titles
   display().xtitle  = "";
   display().ytitle  = "";
-  display()         = "equal";                                                       // this sets the axis aspect argument.
-  display()         = {-2, 2, -2, 2};                                                // set xmin,xmax,ymin,ymax
+  display()         = ccmpl::view2d({-2, 2}, {-2, 2}, ccmpl::aspect::equal, ccmpl::span::placeholder);
   display()        += ccmpl::text("ha=\"center\", va=\"center\", family=\"cursive\", color=\"b\"",          // extra matplotlib arguments
 				  std::bind(fill_data, _1, _2, std::ref(current_time)));// the filling function
 

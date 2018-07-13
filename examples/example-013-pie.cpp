@@ -30,8 +30,7 @@ int main(int argc, char* argv[]) {
   display.set_ratios({1.}, {1.});
 
   display().title   = "Pie chart  ";  
-  display()         = {-1., 1., -1., 1.};  
-  display()         = "equal";
+  display()         = ccmpl::view2d({-1, 1}, {-1, 1}, ccmpl::aspect::equal, ccmpl::span::placeholder); 
   display()        += ccmpl::pie("autopct='%1.1f\\%%', shadow=True, startangle=20", fill_data);
   display++;
 
