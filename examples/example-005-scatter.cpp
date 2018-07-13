@@ -69,21 +69,18 @@ int main(int argc, char* argv[]) {
   auto display = ccmpl::layout(9.0, 3.0, {"###"});
 
   display().title   = "Dots";
-  display()         = {-1.1, 1.1, -1.1, 1.1};    
-  display()         = ccmpl::show_tics(false,false); 
-  display()         = "equal";                                                  
+  display()         = ccmpl::view2d({-1.1, 1.1}, {-1.1, 1.1}, ccmpl::aspect::equal, ccmpl::span::placeholder);
+  display()         = ccmpl::show_tics(false,false);  
   display()        += ccmpl::dots("c='k',s=10", fill_dots);                         update_pattern += '#';
   display++;
   display().title   = "Confetti";
-  display()         = {-1.1, 1.1, -1.1, 1.1};    
-  display()         = ccmpl::show_tics(false,false); 
-  display()         = "equal";                                                  
+  display()         = ccmpl::view2d({-1.1, 1.1}, {-1.1, 1.1}, ccmpl::aspect::equal, ccmpl::span::placeholder);
+  display()         = ccmpl::show_tics(false,false);     
   display()        += ccmpl::confetti("s=10", fill_confetti);                       update_pattern += '#';
   display++;
-  display().title   = "Vectors";
-  display()         = {-1.1, 1.1, -1.1, 1.1};                          
+  display().title   = "Vectors"; 
+  display()         = ccmpl::view2d({-1.1, 1.1}, {-1.1, 1.1}, ccmpl::aspect::equal, ccmpl::span::placeholder);
   display()         = ccmpl::show_tics(false,false); 
-  display()         = "equal";                           
   display()        += ccmpl::vectors("color='black',pivot='tip'", fill_vectors); update_pattern += '#'; 
 
   // the ccmpl::Main object handles generation here.

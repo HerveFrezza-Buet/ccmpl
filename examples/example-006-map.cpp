@@ -52,15 +52,13 @@ int main(int argc, char* argv[]) {
   auto display = ccmpl::layout(8.0, 4.0, {"##"});
 
   display().title   = "Surface";
-  display()         = {-1.1, 1.1, -1.1, 1.1};    
-  display()         = ccmpl::show_tics(false,false); 
-  display()         = "equal";                                                  
+  display()         = ccmpl::view2d({-1.1, 1.1}, {-1.1, 1.1}, ccmpl::aspect::equal, ccmpl::span::placeholder);
+  display()         = ccmpl::show_tics(false,false);                    
   display()        += ccmpl::surface("cmap='binary'", 0, 1, fill_surface);  update_pattern += '#';
   display++;
   display().title   = "Palette";
-  display()         = {-1.1, 1.1, -1.1, 1.1};                          
+  display()         = ccmpl::view2d({-1.1, 1.1}, {-1.1, 1.1}, ccmpl::aspect::equal, ccmpl::span::placeholder);
   display()         = ccmpl::show_tics(false,false); 
-  display()         = "equal";                           
   display()        += ccmpl::palette("", fill_palette);                     update_pattern += '#'; 
 
   // the ccmpl::Main object handles generation here.

@@ -55,25 +55,23 @@ int main(int argc, char* argv[]) {
     + std::to_string(Z_MAX);
 
   display().title   = "Histogram 2D";
-  display()         = {X_MIN, X_MAX, Y_MIN, Y_MAX};    
-  display()         = ccmpl::show_tics(true,true); 
-  display()         = "equal";                                                  
+  display()         = ccmpl::view2d({X_MIN, X_MAX}, {Y_MIN, Y_MAX}, ccmpl::aspect::equal, ccmpl::span::placeholder);
+  display()         = ccmpl::show_tics(true,true);                           
   display()        += ccmpl::histo2d(histo2d_args, 
 				     std::bind(fill_histogram_2d, _1, std::ref(gen)),
 				     X_MIN, X_MAX, NB_X_BINS,
 				     Y_MIN, Y_MAX, NB_Y_BINS); 
   display++;
   display().title   = "Histogram 3D";
-  display()         = {X_MIN, X_MAX, Y_MIN, Y_MAX, Z_MIN, Z_MAX};    
+  display()         = ccmpl::view3d({X_MIN, X_MAX}, {Y_MIN, Y_MAX}, ccmpl::limit::fit, ccmpl::aspect::equal, ccmpl::span::placeholder);
   display()         = ccmpl::show_tics(false,false,true); 
-  display()         = "equal";                                                  
   display()        += ccmpl::histo3d("color='#aaaaff', zsort='average', lw=.5", 
 				     std::bind(fill_histogram_2d, _1, std::ref(gen)),
 				     X_MIN, X_MAX, NB_X_BINS,
 				     Y_MIN, Y_MAX, NB_Y_BINS); 
   display++;
   display().title   = "Histogram 1D";
-  display()         = {X_MIN, X_MAX, 0, 100};    
+  display()         = ccmpl::view2d({X_MIN, X_MAX}, ccmpl::limit::fit, ccmpl::aspect::fit, ccmpl::span::placeholder);
   display()         = ccmpl::show_tics(true,true); 
   display()         = ccmpl::grid("linestyle='--', color='b', alpha=.1"); 
   display()        += ccmpl::histo1d("color=(1,.5,.6), linewidth=1, edgecolor='k'",

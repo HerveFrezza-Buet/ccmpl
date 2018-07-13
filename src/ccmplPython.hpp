@@ -204,7 +204,7 @@ namespace ccmpl {
 	p2d(os, "ax");
       
       if(grid_info != "")
-	os << "ax" << suffix << ".grid(" << grid_info << ')' << std::endl;
+	os << "ax.grid(" << grid_info << ')' << std::endl;
 	
       os << "ax.get_xaxis().get_major_formatter().set_useOffset(" << (use_x_offset ? std::string("True") : std::string("False")) << ")" << std::endl;
       if(use_x_scientific) {
@@ -241,6 +241,7 @@ namespace ccmpl {
       if(show_legend)
 	os << "ax.legend(" << legend_args << ")" << std::endl;
       os << "ax" << suffix << " = ax " << std::endl;
+      os << "ax" << suffix << "_corners = None" << std::endl;
       os << std::endl;
     }
 

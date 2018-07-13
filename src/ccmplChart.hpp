@@ -161,14 +161,6 @@ namespace ccmpl {
       }
     };
 
-
-    /**
-     * To be upgraded (as view2d)
-     */
-    struct Limits3d {
-      double xmin,xmax,ymin,ymax,zmin,zmax;
-    };
-
     struct Tics {
       bool show_xtics;
       bool show_ytics;
@@ -204,7 +196,7 @@ namespace ccmpl {
     double min,max;
     Limit() = delete;
     Limit(limit) : autolim(true), min(0), max(0) {}
-    Limit(double min, double max) : min(min), max(max) {}
+    Limit(double min, double max) : autolim(false), min(min), max(max) {}
   };
 
 
@@ -224,7 +216,8 @@ namespace ccmpl {
 
   enum class span : char {placeholder, limits};
   
-  struct view2d {
+  class view2d {
+  private:
     bool auto_aspect = true;
     double aspect    = 0;
     bool auto_x      = false;
@@ -234,6 +227,8 @@ namespace ccmpl {
     double ymin      = 0;
     double ymax      = 0;
     std::string adj  = "datalim";
+
+  public:
     view2d() = default;
 
     /**
@@ -265,6 +260,39 @@ namespace ccmpl {
 	os << line_start << ".set_ylim(" << ymin << ", " << ymax << ')' << std::endl;
     }
   };
+
+
+  
+  
+  class view3d : private view2d {
+  private:
+    bool auto_z      = false;
+    double zmin      = 0;
+    double zmax      = 0;
+
+  public:
+    view3d() = default;
+
+    /**
+     * @param xlim sets the x-axis limit. Provide something like {-1,2.5} for fixing the limits in the plot, or ccmpl::limit::fit for enabling matplotlib to adjuste the limit values to the data.
+     * @param ylim same as xlim for y-axis.
+     * @param zlim same as xlim for z-axis.
+     * @param a This is the aspect, i.e. the relative scale for x and y axis. If you provide 2, the zoom in y scale is twice the one in x-scale (a square will look like a vertical rectangle whose height is twice its width). You can provide ccmpl::aspect::equal instead of 1. You can provide ccmpl::aspect::fit for fitting the axis scales so that the limits are in the corner on the chart for both axes.
+     * @param f This defines the area covered by the chart on the figure. If you provide ccmpl::span::placeholder, the whole placeholder allocated to the current subplot is spanned. If you provide ccmpl::span::limits, the chart is shrinked to the axis limts (its shape may not fit the one of the placeholder).
+     */
+    view3d(const Limit& xlim, const Limit& ylim, const Limit& zlim, const Aspect& a, span s)
+      : view2d(xlim, ylim, a, s),
+	auto_z(zlim.autolim), zmin(zlim.min), zmax(zlim.max) {}
+
+    void python(std::ostream& os,
+		const std::string& line_start) {
+      this->view2d::python(os, line_start);
+	  
+      if(!auto_z)
+	os << line_start << ".set_zlim(" << zmin << ", " << zmax << ')' << std::endl;
+    }
+  };
+
 
   inline chart::NbTics nb_xtics(unsigned int nb) {
     return {std::string("x"), nb};
@@ -303,8 +331,8 @@ namespace ccmpl {
     class Graph : public Elements {
     public:
       std::string title,xtitle,ytitle,ztitle;
-      view2d  v2d;
-      Limits3d l3d;
+      view2d v2d;
+      view3d v3d;
       bool show_xtics;
       bool show_ytics;
       bool show_ztics;
@@ -321,7 +349,7 @@ namespace ccmpl {
       Graph(const std::string& pos) 
 	: title(""), xtitle(""), ytitle(""), ztitle(""),
 	  v2d(),
-	  l3d(),
+	  v3d(),
 	  show_xtics(true),
 	  show_ytics(true),
 	  show_ztics(true),
@@ -342,7 +370,7 @@ namespace ccmpl {
 	res->ytitle           = ytitle;
 	res->ztitle           = ztitle;
 	res->v2d              = v2d;
-	res->l3d              = l3d;
+	res->v3d              = v3d;
 	res->show_xtics       = show_xtics;
 	res->show_ytics       = show_ytics;
 	res->show_ztics       = show_ztics;
@@ -390,7 +418,7 @@ namespace ccmpl {
 	python::open_graph(os,
 			   suffix,
 			   [this](std::ostream& os, const std::string& prefix){this->v2d.python(os, prefix);},
-			   [this](std::ostream& os, const std::string& prefix){os << "to be done." << std::endl;},
+			   [this](std::ostream& os, const std::string& prefix){this->v3d.python(os, prefix);},
 			   title,xtitle,ytitle,ztitle,
 			   show_xtics, show_ytics, show_ztics,
 			   xticks_position, yticks_position,
@@ -432,9 +460,9 @@ namespace ccmpl {
 	v2d   = view_2d;
       }
 
-      void operator=(const Limits3d& limits) {
+      void operator=(const view3d& view3d) {
 	is_3d = true;
-	l3d = limits;
+	v3d = view3d;
       }
     };
     

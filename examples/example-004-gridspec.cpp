@@ -54,20 +54,17 @@ int main(int argc, char* argv[]) {
 	                                    ">.."  });
 
   // Let us define our charts (3 here, with 1, 2 and 1 data elements respectively)
-  display()         = {-1.1, 1.1, -1.1, 1.1};    
+  display()         = ccmpl::view2d({-1.1, 1.1}, {-1.1, 1.1}, ccmpl::aspect::equal, ccmpl::span::placeholder); 
   display()         = ccmpl::show_tics(false,false); 
-  display()         = "equal";    
   display()        += ccmpl::line("'b-',zorder=1",            fill_circle                                      ); // data element #1
   display()        += ccmpl::dot ("c='y',lw=1,s=50,zorder=2", std::bind(fill_dot,   _1, std::ref(current_time))); // data element #2
   display++;       
-  display()         = {-1.1, 1.1, -1.1, 1.1};    
-  display()         = ccmpl::show_tics(false,false); 
-  display()         = "equal";                                                  
+  display()         = ccmpl::view2d({-1.1, 1.1}, {-1.1, 1.1}, ccmpl::aspect::equal, ccmpl::span::placeholder); 
+  display()         = ccmpl::show_tics(false,false);                        
   display()        += ccmpl::dots("c='g',lw=1,s=20",          std::bind(fill_dots,  _1, std::ref(current_time))); // data element #3
   display++;       
   display().title   = "Gabor filter";    
-  display()         = "equal";    
-  display()         = {-3, 3, -1, 1};    
+  display()         = ccmpl::view2d({-3., 3.}, {-1., 1.}, ccmpl::aspect::equal, ccmpl::span::placeholder); 
   display()         = ccmpl::show_tics(true,false); 
   display()        += ccmpl::line("'b-', linewidth=2.0",      std::bind(fill_gabor, _1, std::ref(current_time))); // data element #4
 
