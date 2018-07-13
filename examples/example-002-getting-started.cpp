@@ -43,8 +43,7 @@ int main(int argc, char* argv[]) {
   display().title   = "Gabor filter";                                       
   display().xtitle  = "space";
   display().ytitle  = "amplitude";
-  display()         = "equal";  // or "auto" or ccmpl::ratio(4,3)...  
-  display()         = {-5, 5, -1, 1};
+  display()         = ccmpl::view2d({-5, 5}, {-1, 1}, ccmpl::aspect::equal, ccmpl::span::placeholder); 
   display()         = ccmpl::legend("loc = 'lower right'"); // sets the legend
   display()        += ccmpl::line("'b-', linewidth=2.0, label='Gabor'", std::bind(fill_data, _1, std::ref(current_time))); // data element #1
   display()        += ccmpl::hbar("'r'",                 std::bind(fill_hbar, _1, std::ref(current_time)));                // data element #2

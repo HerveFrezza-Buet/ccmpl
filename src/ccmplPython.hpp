@@ -170,25 +170,23 @@ namespace ccmpl {
       
     inline void end_data(std::ostream& os) {
     }
-      
+
+    template<typename PRINT_AXIS2D, typename PRINT_AXIS3D>
     inline void open_graph(std::ostream& os,
 			   const std::string& suffix,
-			   double xmin, double xmax,
-			   double ymin, double ymax,
-			   double zmin, double zmax,
+			   const PRINT_AXIS2D& p2d,
+			   const PRINT_AXIS3D& p3d,
 			   const std::string& title,
 			   const std::string& xtitle,
 			   const std::string& ytitle,
 			   const std::string& ztitle,
-			   const std::string& aspect,
 			   bool show_xtics,
 			   bool show_ytics,
 			   bool show_ztics,
 			   const std::string& xticks_position,
 			   const std::string& yticks_position,
+			   const std::string& grid_info,
 			   bool show_axis,
-			   bool autoscale_x,
-			   bool autoscale_y,
 			   bool use_x_offset,
 			   bool use_x_scientific,
 			   const std::string& grid_pos,
@@ -199,40 +197,15 @@ namespace ccmpl {
 	os << ", projection='3d'";
       os << ")" << std::endl
 	 << "plt.sca(ax)" << std::endl;
-      if(!(autoscale_x || autoscale_y)) {
-	os << "xmin" << suffix << "=" << xmin << std::endl
-	   << "xmax" << suffix << "=" << xmax << std::endl
-	   << "ymin" << suffix << "=" << ymin << std::endl
-	   << "ymax" << suffix << "=" << ymax << std::endl;
-	if(is_3d)
-	  os << "zmin" << suffix << "=" << zmin << std::endl
-	     << "zmax" << suffix << "=" << zmax << std::endl;
-	if(!is_3d) 
-	  os << "ax.set_xlim(xmin" << suffix << ", xmax" << suffix << ')' << std::endl
-	     << "ax.set_ylim(ymin" << suffix << ", ymax" << suffix << ')' << std::endl;
-	if(is_3d)
-	  os << "ax.set_autoscale_on(False)" << std::endl
-	     << "ax.set_xlim3d(xmin" << suffix << ", xmax" << suffix << ')' << std::endl
-	     << "ax.set_ylim3d(ymin" << suffix << ", ymax" << suffix << ')' << std::endl
-	     << "ax.set_zlim3d(zmin" << suffix << ", zmax" << suffix << ')' << std::endl;
-	    
-      }
-      else if(autoscale_x) {
-	if(is_3d)
-	  throw std::invalid_argument("Autoscaling x alone is not supported in 3D yet");
-	os << "ax.set_autoscale_on(True)" << std::endl;
-	os << "ymin" << suffix << "=" << ymin << std::endl
-	   << "ymax" << suffix << "=" << ymax << std::endl;
-	os << "ax.set_ylim(ymin" << suffix << ", ymax" << suffix << ')' << std::endl;
-      }
-      else if(autoscale_y) {
-	if(is_3d)
-	  throw std::invalid_argument("Autoscaling y alone is not supported in 3D yet");
-	os << "ax.set_autoscale_on(True)" << std::endl;
-	os << "xmin" << suffix << "=" << xmin << std::endl
-	   << "xmax" << suffix << "=" << xmax << std::endl;
-	os << "ax.set_xlim(xmin" << suffix << ", xmax" << suffix << ')' << std::endl;
-      }
+
+      if(is_3d)
+	p3d(os, "ax");
+      else
+	p2d(os, "ax");
+      
+      if(grid_info != "")
+	os << "ax" << suffix << ".grid(" << grid_info << ')' << std::endl;
+	
       os << "ax.get_xaxis().get_major_formatter().set_useOffset(" << (use_x_offset ? std::string("True") : std::string("False")) << ")" << std::endl;
       if(use_x_scientific) {
 	os << "ax.get_xaxis().get_major_formatter().set_scientific(True)"<< std::endl;
@@ -240,9 +213,7 @@ namespace ccmpl {
       }
       else
 	os << "ax.get_xaxis().get_major_formatter().set_scientific(False)" << std::endl;
-
-      if(aspect != "")
-	os << "ax.set_aspect(" << aspect << ")" << std::endl;
+      
       if(title != "")
 	os << "ax.set_title(r'" << title << "')" << std::endl;
       if(xtitle != "")
@@ -623,8 +594,8 @@ namespace ccmpl {
     inline void get_vbar(std::ostream& os, const std::string& suffix) {
       start_data(os);
       os << "\t\tx = float(sys.stdin.readline())" << std::endl
-	 << "\t\tvbar" << suffix << ".set_data([x,x],[ymin" 
-	 << suffix << ",ymax" << suffix << "])" << std::endl;
+	 << "\t\tymin, ymax = ax" << suffix << ".get_ylim()" << std::endl
+	 << "\t\tvbar" << suffix << ".set_data([x,x],[ymin,ymax])" << std::endl;
       end_data(os);
     }
       
@@ -637,8 +608,8 @@ namespace ccmpl {
     inline void get_hbar(std::ostream& os, const std::string& suffix) {
       start_data(os);
       os << "\t\ty = float(sys.stdin.readline())" << std::endl
-	 << "\t\thbar" << suffix << ".set_data([xmin" 
-	 << suffix << ",xmax" << suffix << "],[y,y])" << std::endl;
+	 << "\t\txmin, xmax = ax" << suffix << ".get_xlim()" << std::endl
+	 << "\t\thbar" << suffix << ".set_data([xmin,xmax],[y,y])" << std::endl;
       end_data(os);
     }
 

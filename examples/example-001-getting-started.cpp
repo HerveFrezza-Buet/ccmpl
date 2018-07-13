@@ -25,20 +25,27 @@ int main(int argc, char* argv[]) {
   // display in the main function.
   ccmpl::Main m(argc,argv,VIEW_PREFIX);
 
-  // Let us define the layout, a 1x1 grid here. Args are width, height
+  // Let us define the layout, a 1x2 grid here. Args are width, height
   // the grid structure and, optionnaly, the background color of the figure
-  auto display = ccmpl::layout(8.0, 4.0,
-			       {"#"},
+  auto display = ccmpl::layout(8.0, 8.0,
+			       {"#", "#"}, // Two stacked plots here (see next examples).
 			       ccmpl::RGB(1., 1., 1.));
-  display.set_ratios({1.}, {1.});
+  display.set_ratios({2.}, {1., 1.});
 
-  // Let us define our charts (1 here)
+  // Let us define our charts 
   display().title   = "Gabor filter";                                                // set chart titles
   display().xtitle  = "space";
   display().ytitle  = "amplitude";
-  display()         = "auto";                                                        // this sets the axis aspect argument.
-  display()         = {-5, 5, -1, 1};                                                // set xmin,xmax,ymin,ymax
-  display()         = ccmpl::autoscale::Y;                                           // We autoscale on Y only. X, XY are also available.
+  display()         = ccmpl::view2d({-5, 5}, {-10, 10}, ccmpl::aspect::fit, ccmpl::span::placeholder); 
+  display()        += ccmpl::line("'b-'",                                            // extra matplotlib arguments
+				  std::bind(fill_data, _1, std::ref(current_time))); // the filling function
+  
+  display++; // skip to next chart description... only y-limit management changes.
+  
+  display().title   = "Gabor filter";                                                // set chart titles
+  display().xtitle  = "space";
+  display().ytitle  = "amplitude";
+  display()         = ccmpl::view2d({-5, 5}, ccmpl::limit::fit, ccmpl::aspect::fit, ccmpl::span::placeholder); 
   display()        += ccmpl::line("'b-'",                                            // extra matplotlib arguments
 				  std::bind(fill_data, _1, std::ref(current_time))); // the filling function
 
@@ -49,8 +56,8 @@ int main(int argc, char* argv[]) {
 
   // ccmpl::filename("img",i,"png") helps to define "img-%06d.png" names. Use ccmpl::nofile() if no image files are needed.
 
-  for(current_time = 0; current_time < 100; ++current_time)
-    std::cout << display("#", // Use # or - for each data element for trigerring its update.
+  for(current_time = 0; current_time < 1000; ++current_time)
+    std::cout << display("##", // Use # or - for each data element for trigerring its update.
 			 ccmpl::nofile(),  // name of the generated pdf file
 			 ccmpl::nofile()); // name of the generated png file. 
 

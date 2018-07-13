@@ -161,10 +161,10 @@ namespace ccmpl {
       }
     };
 
-    struct Limits2d {
-      double xmin,xmax,ymin,ymax;
-    };
 
+    /**
+     * To be upgraded (as view2d)
+     */
     struct Limits3d {
       double xmin,xmax,ymin,ymax,zmin,zmax;
     };
@@ -191,32 +191,80 @@ namespace ccmpl {
       Legend& operator=(const Legend&) = default;
     };
 
-    struct Ratio {
-      double num;
-      double denom;
-
-      Ratio() : num(0), denom(0) {}
-      Ratio(double n, double d) : num(n), denom(d) {}
-      Ratio(const Ratio& cp) : num(cp.num), denom(cp.denom) {}
-      Ratio& operator=(const Ratio& cp) {
-	if(&cp != this) {
-	  num = cp.num;
-	  denom = cp.denom;
-	}
-	return *this;
-      }
-      bool is_valid() {
-	return num != 0 && denom != 0;
-      }
-    };
-
+    
     struct GridInfo {
       std::string info;
       GridInfo(const std::string& info) : info(info) {}
     };
   }
 
-  enum class autoscale :  std::uint8_t {X, Y, XY};
+  enum class limit : char {fit};
+  struct Limit {
+    bool autolim;
+    double min,max;
+    Limit() = delete;
+    Limit(limit) : autolim(true), min(0), max(0) {}
+    Limit(double min, double max) : min(min), max(max) {}
+  };
+
+
+  enum class aspect : char {fit, equal};
+  struct Aspect {
+    bool auto_aspect;
+    double value;
+    Aspect() = delete;
+    Aspect(double value) : auto_aspect(false), value(value) {}
+    Aspect(aspect a) : auto_aspect(false), value(1.0) {
+      if(a == aspect::fit) {
+	auto_aspect = true;
+	value = 0;
+      }
+    }
+  };
+
+  enum class span : char {placeholder, limits};
+  
+  struct view2d {
+    bool auto_aspect = true;
+    double aspect    = 0;
+    bool auto_x      = false;
+    double xmin      = 0;
+    double xmax      = 0;
+    bool auto_y      = false;
+    double ymin      = 0;
+    double ymax      = 0;
+    std::string adj  = "datalim";
+    view2d() = default;
+
+    /**
+     * @param xlim sets the x-axis limit. Provide something like {-1,2.5} for fixing the limits in the plot, or ccmpl::limit::fit for enabling matplotlib to adjuste the limit values to the data.
+     * @param ylim same as xlim for y-axis.
+     * @param a This is the aspect, i.e. the relative scale for x and y axis. If you provide 2, the zoom in y scale is twice the one in x-scale (a square will look like a vertical rectangle whose height is twice its width). You can provide ccmpl::aspect::equal instead of 1. You can provide ccmpl::aspect::fit for fitting the axis scales so that the limits are in the corner on the chart for both axes.
+     * @param f This defines the area covered by the chart on the figure. If you provide ccmpl::span::placeholder, the whole placeholder allocated to the current subplot is spanned. If you provide ccmpl::span::limits, the chart is shrinked to the axis limts (its shape may not fit the one of the placeholder).
+     */
+    view2d(const Limit& xlim, const Limit& ylim, const Aspect& a, span s)
+      : auto_aspect(a.auto_aspect),
+	aspect(a.value),
+	auto_x(xlim.autolim), xmin(xlim.min), xmax(xlim.max),
+	auto_y(ylim.autolim), ymin(ylim.min), ymax(ylim.max),
+	adj(s == span::placeholder ? "datalim" : "box") {}
+
+    void python(std::ostream& os,
+		const std::string& line_start) {
+      if(auto_aspect)
+	os << line_start << ".set_aspect('auto')" << std::endl;
+      else
+	os << line_start << ".set_aspect(" << aspect << ")" << std::endl;
+      
+      os << line_start << ".set_adjustable('" << adj << "')" << std::endl;
+
+      if(!auto_x)
+	os << line_start << ".set_xlim(" << xmin << ", " << xmax << ')' << std::endl;
+	  
+      if(!auto_y)
+	os << line_start << ".set_ylim(" << ymin << ", " << ymax << ')' << std::endl;
+    }
+  };
 
   inline chart::NbTics nb_xtics(unsigned int nb) {
     return {std::string("x"), nb};
@@ -238,14 +286,6 @@ namespace ccmpl {
     return {false, false, false, false};
   }
 
-  inline chart::Ratio ratio(double num) {
-    return {num, 1.0};
-  }
-
-  inline chart::Ratio ratio(double num, double denom) {
-    return {num, denom};
-  }
-
   inline chart::Legend legend() {
     return chart::Legend(true);
   }
@@ -263,18 +303,13 @@ namespace ccmpl {
     class Graph : public Elements {
     public:
       std::string title,xtitle,ytitle,ztitle;
-      std::string aspect;
-      Ratio ratio;
-      double xmin,xmax;
-      double ymin,ymax;
-      double zmin,zmax;
+      view2d  v2d;
+      Limits3d l3d;
       bool show_xtics;
       bool show_ytics;
       bool show_ztics;
       std::string xticks_position, yticks_position;
       bool show_axis;
-      bool autoscale_x;
-      bool autoscale_y;
       bool use_x_offset;
       bool use_x_scientific;
       std::string grid_pos;
@@ -284,17 +319,16 @@ namespace ccmpl {
       std::string grid_info;
       
       Graph(const std::string& pos) 
-	: title(""), xtitle(""), ytitle(""), ztitle(""), aspect("auto"), ratio(),
-	  xmin(0),xmax(1),
-	  ymin(0),ymax(1),
-	  zmin(0),zmax(1), 
+	: title(""), xtitle(""), ytitle(""), ztitle(""),
+	  v2d(),
+	  l3d(),
 	  show_xtics(true),
 	  show_ytics(true),
 	  show_ztics(true),
 	  xticks_position("default"),
 	  yticks_position("default"),
 	  show_axis(true),
-	  autoscale_x(false), autoscale_y(false),use_x_offset(true), use_x_scientific(false), grid_pos(pos),
+	  use_x_offset(true), use_x_scientific(false), grid_pos(pos),
 	  is_3d(false),
 	  legend(),
 	  nb_tics(),
@@ -307,18 +341,14 @@ namespace ccmpl {
 	res->xtitle           = xtitle;
 	res->ytitle           = ytitle;
 	res->ztitle           = ztitle;
-	res->xmin             = xmin;
-	res->xmax             = xmax;
-	res->ymin             = ymin;
-	res->ymax             = ymax;
+	res->v2d              = v2d;
+	res->l3d              = l3d;
 	res->show_xtics       = show_xtics;
 	res->show_ytics       = show_ytics;
 	res->show_ztics       = show_ztics;
 	res->xticks_position  = xticks_position;
 	res->yticks_position  = yticks_position;
 	res->show_axis        = show_axis;
-	res->autoscale_x      = autoscale_x;
-	res->autoscale_y      = autoscale_y;
 	res->use_x_offset     = use_x_offset;
 	res->use_x_scientific = use_x_scientific;
 	res->is_3d            = is_3d;
@@ -329,48 +359,43 @@ namespace ccmpl {
       }
 
       virtual void plot_getdata(std::ostream& os) {
-	os << "\tax" << suffix << "_corners = None"         << std::endl;
-	this->Elements::plot_getdata(os);
-	if(autoscale_x && autoscale_y)
-	  os << "\tax" << suffix << ".relim() "             << std::endl
-	     << "\tif(ax" << suffix << "_corners != None):" << std::endl
-	     << "\t\tax" << suffix << ".dataLim.update_from_data_xy(np.array(ax" << suffix << "_corners, float), ignore=False)" << std::endl
-	     << "\tax" << suffix << ".autoscale_view(tight=True)" << std::endl;
-	else if(autoscale_x) {
-	  os << "\tax" << suffix << ".relim() "             << std::endl;
-	  os << "\tax" << suffix << ".set_ylim(ymin" << suffix << ", ymax" << suffix << ')' << std::endl;
-	  os << "\tax" << suffix << ".autoscale_view(tight=True, scalex=True, scaley=False)" << std::endl;
-	}
-	else if(autoscale_y) {
-	  os << "\tax" << suffix << ".relim() "             << std::endl;
-	  os << "\tax" << suffix << ".set_xlim(xmin" << suffix << ", xmax" << suffix << ')' << std::endl;
-	  os << "\tax" << suffix << ".autoscale_view(tight=True, scalex=False, scaley=True)" << std::endl;
-	}
+	// os << "\tax" << suffix << "_corners = None"         << std::endl;
+	// this->Elements::plot_getdata(os);
+	// if(autoscale_x && autoscale_y)
+	//   os << "\tax" << suffix << ".relim() "             << std::endl
+	//      << "\tif(ax" << suffix << "_corners != None):" << std::endl
+	//      << "\t\tax" << suffix << ".dataLim.update_from_data_xy(np.array(ax" << suffix << "_corners, float), ignore=False)" << std::endl
+	//      << "\tax" << suffix << ".autoscale_view(tight=True)" << std::endl;
+	// else if(autoscale_x) {
+	//   os << "\tax" << suffix << ".relim() "             << std::endl;
+	//   os << "\tax" << suffix << ".set_ylim(ymin" << suffix << ", ymax" << suffix << ')' << std::endl;
+	//   os << "\tax" << suffix << ".autoscale_view(tight=True, scalex=True, scaley=False)" << std::endl;
+	// }
+	// else if(autoscale_y) {
+	//   os << "\tax" << suffix << ".relim() "             << std::endl;
+	//   os << "\tax" << suffix << ".set_xlim(xmin" << suffix << ", xmax" << suffix << ')' << std::endl;
+	//   os << "\tax" << suffix << ".autoscale_view(tight=True, scalex=False, scaley=True)" << std::endl;
+	// }
 
-	if(grid_info != "")
-	  os << "\tax" << suffix << ".grid(" << grid_info << ')' << std::endl;
+	// if(grid_info != "")
+	//   os << "\tax" << suffix << ".grid(" << grid_info << ')' << std::endl;
+
+	this->Elements::plot_getdata(os);
+	os << "\tax" << suffix << ".relim()" << std::endl;
+	os << "\tax" << suffix << ".autoscale_view()" << std::endl;
+
       }
 
       virtual void plot(std::ostream& os) {
-
-	// Let us process the aspect properly.
-	if(ratio.is_valid()) {
-	  double r = (xmax-xmin)/(ymax-ymin);
-	  r *= ratio.denom/ratio.num;
-	  aspect = std::to_string(r);
-	}
-	else
-	  aspect = std::string("'") + aspect + std::string("'");
-	
-	
 	python::open_graph(os,
 			   suffix,
-			   xmin,xmax,ymin,ymax,zmin,zmax,
-			   title,xtitle,ytitle,ztitle,aspect,
+			   [this](std::ostream& os, const std::string& prefix){this->v2d.python(os, prefix);},
+			   [this](std::ostream& os, const std::string& prefix){os << "to be done." << std::endl;},
+			   title,xtitle,ytitle,ztitle,
 			   show_xtics, show_ytics, show_ztics,
 			   xticks_position, yticks_position,
+			   grid_info,
 			   show_axis,
-			   autoscale_x, autoscale_y,
 			   use_x_offset, use_x_scientific, grid_pos, is_3d);
 	this->Elements::plot(os);
 	python::close_graph(os, suffix, legend.show, legend.args);
@@ -389,10 +414,6 @@ namespace ccmpl {
 	show_axis  = tics.show_axis;
       }
       
-      void operator=(const Ratio& aspect_ratio) {
-	ratio = aspect_ratio;
-	aspect = "";
-      }
       
       void operator=(const Legend& l) {
 	legend = l;
@@ -405,63 +426,15 @@ namespace ccmpl {
       void operator=(const NbTics& nbt) {
 	nb_tics.push_back(nbt);
       }
-      
-      void operator=(autoscale as) {
-	switch(as) {
-	case autoscale::X:
-	  autoscale_x = true;
-	  autoscale_y = false;
-	  break;
-	case autoscale::Y:
-	  autoscale_x = false;
-	  autoscale_y = true;
-	  break;
-	case autoscale::XY:
-	  autoscale_x = true;
-	  autoscale_y = true;
-	  break;
-	}
-      }
-      
-      void operator=(const char* aspect_label) {
-	aspect = std::string(aspect_label);
-	ratio = Ratio();
-      }
 
-      void operator=(const std::string& aspect_label) {
-	aspect = aspect_label;
-	ratio = Ratio();
-      }
-      
-      void operator=(const std::initializer_list<double>& limits) {
-	auto it = limits.begin();
-	xmin = *(it++);
-	xmax = *(it++);
-	ymin = *(it++);
-	ymax = *(it++);
-	is_3d = it != limits.end();
-	if(is_3d) {
-	  zmin = *(it++);
-	  zmax = *(it++);
-	}
-      }
-
-      void operator=(const Limits2d& limits) {
+      void operator=(const view2d& view_2d) {
 	is_3d = false;
-	xmin = limits.xmin;
-	xmax = limits.xmax;
-	ymin = limits.ymin;
-	ymax = limits.ymax;
+	v2d   = view_2d;
       }
 
       void operator=(const Limits3d& limits) {
 	is_3d = true;
-	xmin = limits.xmin;
-	xmax = limits.xmax;
-	ymin = limits.ymin;
-	ymax = limits.ymax;
-	zmin = limits.ymin;
-	zmax = limits.ymax;
+	l3d = limits;
       }
     };
     

@@ -76,33 +76,28 @@ int main(int argc, char* argv[]) {
   display.set_ratios({1.,2.,1.}, {1.,1.});
 
   // Let us define our charts (3 here, with 1, 2 and 1 data elements respectively)
-  display()         = {-1.1, 1.1, -1.1, 1.1};
+  display()         = ccmpl::view2d({-1.1, 1.1}, {-1.1, 1.1}, ccmpl::aspect::equal, ccmpl::span::placeholder); 
   display()         = ccmpl::show_tics(false,false); // hide x and y tics
-  display()         = "equal";    
   display()        += ccmpl::line("'b-',zorder=1",            fill_circle                                      ); // data element #1
   display()        += ccmpl::dot ("c='y',lw=1,s=50,zorder=2", std::bind(fill_dot,   _1, std::ref(current_time))); // data element #2
   display++;        // Skip to next chart.
   display().title   = "Between Gabor and 0";     
-  display()         = ccmpl::ratio(5,2); // width/height = 5/2 
-  display()         = {-3, 3, -1, 1};    
+  display()         = ccmpl::view2d({-3., 3.}, {-1., 1.}, 2/5., ccmpl::span::placeholder); /* height/width axis unit = 2/5 */
   display()         = ccmpl::show_tics(true,false); // hide y tics 
   display()        += ccmpl::between("linewidth=2.0, linestyle='--', color='black', facecolor='red', alpha=0.5, interpolate=True",
 				     std::bind(fill_between, _1, std::ref(current_time))); // data element #3
   display++;        // Skip to next chart. 
-  display()         = {-1.1, 1.1, -1.1, 1.1};    
-  display()         = ccmpl::hide_axis(); // hide axis (ticks as well)
-  display()         = "equal";                                                  
+  display()         = ccmpl::view2d({-1.1, 1.1}, {-1.1, 1.1}, ccmpl::aspect::equal, ccmpl::span::placeholder); 
+  display()         = ccmpl::hide_axis(); // hide axis (ticks as well)    
   display()        += ccmpl::dots("c='g',lw=1,s=20",          std::bind(fill_dots,  _1, std::ref(current_time))); // data element #4
   display++;        // Skip to next chart.
   display().title   = "Gabor filter";     
-  display()         = ccmpl::ratio(5,2); // width/height = 5/2 
-  display()         = {-3, 3, -1, 1};    
+  display()         = ccmpl::view2d({-3., 3.}, {-1., 1.}, 2/5., ccmpl::span::placeholder);
   display()         = ccmpl::show_tics(true,false); // hide y tics  
   display()        += ccmpl::line("'b-', linewidth=2.0",      std::bind(fill_gabor, _1, std::ref(current_time))); // data element #5
   display++;        // Skip to next chart.
   display().title   = "Crazy lines";     
-  display()         = "equal";       
-  display()         = {-1., 1., -1., 1.};
+  display()         = ccmpl::view2d({-1.1, 1.1}, {-1.1, 1.1}, ccmpl::aspect::equal, ccmpl::span::placeholder); 
   display()         = ccmpl::show_tics(false,false); // hide x and y tics
   display()        += ccmpl::lines("'r-', linewidth=1.0",  fill_lines                                          ); // data element #6                                       
 
