@@ -235,7 +235,7 @@ namespace ccmpl {
      * @param xlim sets the x-axis limit. Provide something like {-1,2.5} for fixing the limits in the plot, or ccmpl::limit::fit for enabling matplotlib to adjuste the limit values to the data.
      * @param ylim same as xlim for y-axis.
      * @param a This is the aspect, i.e. the relative scale for x and y axis. If you provide 2, the zoom in y scale is twice the one in x-scale (a square will look like a vertical rectangle whose height is twice its width). You can provide ccmpl::aspect::equal instead of 1. You can provide ccmpl::aspect::fit for fitting the axis scales so that the limits are in the corner on the chart for both axes.
-     * @param f This defines the area covered by the chart on the figure. If you provide ccmpl::span::placeholder, the whole placeholder allocated to the current subplot is spanned. If you provide ccmpl::span::limits, the chart is shrinked to the axis limts (its shape may not fit the one of the placeholder).
+     * @param s This defines the area covered by the chart on the figure. If you provide ccmpl::span::placeholder, the whole placeholder allocated to the current subplot is spanned. If you provide ccmpl::span::limits, the chart is shrinked to the axis limts (its shape may not fit the one of the placeholder).
      */
     view2d(const Limit& xlim, const Limit& ylim, const Aspect& a, span s)
       : auto_aspect(a.auto_aspect),
