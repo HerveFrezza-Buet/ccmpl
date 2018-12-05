@@ -12,7 +12,7 @@ namespace ccmpl {
     Main(const std::string& prefix)
       : pyfile(prefix+".py"),
 	moviefile(prefix+".mp4"),
-	movie_writer("avconv") {}
+	movie_writer("ffmpeg") {}
 
   public:
 
