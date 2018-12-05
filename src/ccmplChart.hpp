@@ -166,6 +166,8 @@ namespace ccmpl {
       bool show_ytics;
       bool show_ztics;
       bool show_axis;
+
+      explicit Tics(bool sx, bool sy, bool sz, bool sa): show_xtics(sx), show_ytics(sy), show_ztics(sz), show_axis(sa){};
     };
 
     struct NbTics {
@@ -307,11 +309,11 @@ namespace ccmpl {
   }
 
   inline chart::Tics show_tics(bool x, bool y, bool z=false) {
-    return {x,y,z,true};
+    return chart::Tics(x,y,z,true);
   }
 
   inline chart::Tics hide_axis() {
-    return {false, false, false, false};
+    return chart::Tics(false, false, false, false);
   }
 
   inline chart::Legend legend() {
