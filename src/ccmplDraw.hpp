@@ -117,11 +117,11 @@ namespace ccmpl {
     }
 
     virtual void plot_getdata(std::ostream& os) {
-      python::get_vbar(os,python::parent_suffix(suffix));
+      python::get_vbar(os,suffix);
     }
 
     virtual void plot(std::ostream& os) {
-      python::plot_vbar(os,python::parent_suffix(suffix),args);
+      python::plot_vbar(os,suffix,args);
     }
       
   };
@@ -163,11 +163,11 @@ namespace ccmpl {
     }
 
     virtual void plot_getdata(std::ostream& os) {
-      python::get_hbar(os,python::parent_suffix(suffix));
+      python::get_hbar(os,suffix);
     }
 
     virtual void plot(std::ostream& os) {
-      python::plot_hbar(os,python::parent_suffix(suffix),args);
+      python::plot_hbar(os,suffix,args);
     }
       
   };

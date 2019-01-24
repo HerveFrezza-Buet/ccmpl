@@ -595,7 +595,7 @@ namespace ccmpl {
     inline void get_vbar(std::ostream& os, const std::string& suffix) {
       start_data(os);
       os << "\t\tx = float(sys.stdin.readline())" << std::endl
-	 << "\t\tymin, ymax = ax" << suffix << ".get_ylim()" << std::endl
+	 << "\t\tymin, ymax = ax" << parent_suffix(suffix) << ".get_ylim()" << std::endl
 	 << "\t\tvbar" << suffix << ".set_data([x,x],[ymin,ymax])" << std::endl;
       end_data(os);
     }
@@ -609,7 +609,7 @@ namespace ccmpl {
     inline void get_hbar(std::ostream& os, const std::string& suffix) {
       start_data(os);
       os << "\t\ty = float(sys.stdin.readline())" << std::endl
-	 << "\t\txmin, xmax = ax" << suffix << ".get_xlim()" << std::endl
+	 << "\t\txmin, xmax = ax" << parent_suffix(suffix) << ".get_xlim()" << std::endl
 	 << "\t\thbar" << suffix << ".set_data([xmin,xmax],[y,y])" << std::endl;
       end_data(os);
     }
