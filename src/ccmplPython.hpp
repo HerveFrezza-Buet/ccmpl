@@ -70,6 +70,15 @@ namespace ccmpl {
 	 << "from matplotlib import cm" << std::endl
 	 << "import matplotlib.animation as manimation" << std::endl
 	 << "import sys" << std::endl
+	 << std::endl
+	 << "pipe = sys.stdin" << std::endl
+	 << "if len(sys.argv) == 2:" << std::endl
+	 << "\tpipename = sys.argv[1]" << std::endl
+	 << "\ttry:" << std::endl
+	 << "\t\tpipe = open(pipename, 'r')" << std::endl
+	 << "\texcept:" << std::endl
+	 << "\t\tprint('cannot open pipe {}. Aborting.'.format(pipename))" << std::endl
+	 << "\t\tsys.exit(1)" << std::endl
 	 << std::endl;
     }
       
@@ -137,9 +146,9 @@ namespace ccmpl {
 
       
     inline void start_read(std::ostream& os) {
-      os << "cont = sys.stdin.readline().split()[0]=='cont'" << std::endl
+      os << "cont = pipe.readline().split()[0]=='cont'" << std::endl
 	 << "while cont:" << std::endl
-	 << "\tfiles    = sys.stdin.readline().split(',')" << std::endl
+	 << "\tfiles    = pipe.readline().split(',')" << std::endl
 	 << "\tpdf_name = files[0]" << std::endl
 	 << "\tpng_name = files[1]" << std::endl
 	 << "\tpng_dpi = int(files[2])" << std::endl;
@@ -160,11 +169,11 @@ namespace ccmpl {
 	 << "\tfig.canvas.draw()" << std::endl;
       if(movie)
 	os << "\twriter.grab_frame()" << std::endl;
-      os << "\tcont = sys.stdin.readline().split()[0]=='cont'" << std::endl;
+      os << "\tcont = pipe.readline().split()[0]=='cont'" << std::endl;
     }
       
     inline void start_data(std::ostream& os) {
-      os << "\tdata_line = sys.stdin.readline().split()" << std::endl
+      os << "\tdata_line = pipe.readline().split()" << std::endl
 	 << "\tif data_line[0] == 'data':" << std::endl;
     }
       
@@ -255,9 +264,9 @@ namespace ccmpl {
 			    const std::string& suffix,
 			    const std::string& args) {
       start_data(os);
-      os << "\t\tx  = [float(v) for v in sys.stdin.readline().split()]" << std::endl
-	 << "\t\ty1 = [float(v) for v in sys.stdin.readline().split()]" << std::endl
-	 << "\t\ty2 = [float(v) for v in sys.stdin.readline().split()]" << std::endl
+      os << "\t\tx  = [float(v) for v in pipe.readline().split()]" << std::endl
+	 << "\t\ty1 = [float(v) for v in pipe.readline().split()]" << std::endl
+	 << "\t\ty2 = [float(v) for v in pipe.readline().split()]" << std::endl
 	 << "\t\tif between" << suffix << " != None : between" << suffix << ".remove()" << std::endl
 	 << "\t\tbetween" << suffix << " = ax" << suffix << ".fill_between(x,y1,y2" << add_args(args) << ")" << std::endl;
       end_data(os);
@@ -271,17 +280,17 @@ namespace ccmpl {
       
     inline void get_pie(std::ostream& os, const std::string& suffix, const std::string& args) {
       start_data(os);
-      os << "\t\tsizes = [float(v) for v in sys.stdin.readline().split()]" << std::endl;
+      os << "\t\tsizes = [float(v) for v in pipe.readline().split()]" << std::endl;
 
       os << "\t\tcolors = []" << std::endl
 	 << "\t\tfor i in range(len(sizes)):" << std::endl
-	 << "\t\t\tcolors.append([float(v) for v in sys.stdin.readline().split()])" << std::endl;
+	 << "\t\t\tcolors.append([float(v) for v in pipe.readline().split()])" << std::endl;
 
       os << "\t\tlabels = []" << std::endl
 	 << "\t\tfor i in range(len(sizes)):" << std::endl
-	 << "\t\t\tlabels.append(sys.stdin.readline()[:-1])" << std::endl;
+	 << "\t\t\tlabels.append(pipe.readline()[:-1])" << std::endl;
       
-      os << "\t\texplodes = [float(v) for v in sys.stdin.readline().split()]" << std::endl;
+      os << "\t\texplodes = [float(v) for v in pipe.readline().split()]" << std::endl;
       
       os << "\t\tif pie" << suffix << " != None : pie" << suffix << ".remove()" << std::endl
 	 << "\t\tpie" << suffix << " = ax" << suffix << ".pie(sizes, explode=explodes, labels=labels, colors=colors" << add_args(args) << ")" << std::endl;
@@ -297,8 +306,8 @@ namespace ccmpl {
       
     inline void get_line(std::ostream& os, const std::string& suffix) {
       start_data(os);
-      os << "\t\tx = [float(v) for v in sys.stdin.readline().split()]" << std::endl
-	 << "\t\ty = [float(v) for v in sys.stdin.readline().split()]" << std::endl
+      os << "\t\tx = [float(v) for v in pipe.readline().split()]" << std::endl
+	 << "\t\ty = [float(v) for v in pipe.readline().split()]" << std::endl
 	 << "\t\tline" << suffix << ".set_data(x,y)" << std::endl;
       end_data(os);
     }
@@ -313,13 +322,13 @@ namespace ccmpl {
 			  const std::string& suffix,
 			  const std::string& args) {
       start_data(os);
-      os << "\t\tnb_lines = [int(v) for v in sys.stdin.readline().split()][0]" << std::endl
+      os << "\t\tnb_lines = [int(v) for v in pipe.readline().split()][0]" << std::endl
 	 << "\t\tif lines" << suffix << " != None :" << std::endl
 	 << "\t\t\tfor line in lines" << suffix << " : line[0].remove()" << std::endl
 	 << "\t\tlines" << suffix << " = []" << std::endl
 	 << "\t\tfor l in range(nb_lines) :" << std::endl
-	 << "\t\t\tx = [float(v) for v in sys.stdin.readline().split()]" << std::endl
-	 << "\t\t\ty = [float(v) for v in sys.stdin.readline().split()]" << std::endl
+	 << "\t\t\tx = [float(v) for v in pipe.readline().split()]" << std::endl
+	 << "\t\t\ty = [float(v) for v in pipe.readline().split()]" << std::endl
 	 << "\t\t\tlines" << suffix << ".append(ax" << suffix << ".plot(x, y" << add_args(args) << "))" << std::endl;
       end_data(os);
     }
@@ -334,7 +343,7 @@ namespace ccmpl {
 			const std::string& suffix,
 			const std::string& args) {
       start_data(os);
-      os << "\t\tpt = [float(v) for v in sys.stdin.readline().split()]" << std::endl
+      os << "\t\tpt = [float(v) for v in pipe.readline().split()]" << std::endl
 	 << "\t\tif dot" << suffix << " != None : dot" << suffix << ".remove()" << std::endl
 	 << "\t\tdot" << suffix << " = ax" << suffix << ".scatter([pt[0]],[pt[1]]" << add_args(args) << ")" << std::endl;
       end_data(os);
@@ -350,8 +359,8 @@ namespace ccmpl {
 			 const std::string& suffix,
 			 const std::string& args) {
       start_data(os);
-      os << "\t\tx = [float(v) for v in sys.stdin.readline().split()]" << std::endl
-	 << "\t\ty = [float(v) for v in sys.stdin.readline().split()]" << std::endl
+      os << "\t\tx = [float(v) for v in pipe.readline().split()]" << std::endl
+	 << "\t\ty = [float(v) for v in pipe.readline().split()]" << std::endl
 	 << "\t\tif dots" << suffix << " != None : dots" << suffix << ".remove()" << std::endl
 	 << "\t\tdots" << suffix << " = ax" << suffix << ".scatter(x,y" << add_args(args) << ")" << std::endl;
       end_data(os);
@@ -368,9 +377,9 @@ namespace ccmpl {
 			    double vmin, double vmax) {
       std::string parent_suffix = suffix.substr(0, suffix.find_last_of('_'));
       start_data(os);
-      os << "\t\tx = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl
-	 << "\t\ty = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl
-	 << "\t\tv = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl
+      os << "\t\tx = np.array([float(v) for v in pipe.readline().split()])" << std::endl
+	 << "\t\ty = np.array([float(v) for v in pipe.readline().split()])" << std::endl
+	 << "\t\tv = np.array([float(v) for v in pipe.readline().split()])" << std::endl
 	 << "\t\ttry:" << std::endl
 	 << "\t\t\tif surface" << suffix << " != None : surface" << suffix << ".remove()" << std::endl
 	 << "\t\t\tif ax" << parent_suffix << "_corners == None:" << std::endl
@@ -399,9 +408,9 @@ namespace ccmpl {
 			    const std::string& args) {
       std::string parent_suffix = suffix.substr(0, suffix.find_last_of('_'));
       start_data(os);
-      os << "\t\tx = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl
-	 << "\t\ty = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl
-	 << "\t\tcols = [[float(v) for v in l.split()] for l in sys.stdin.readline().split(',')[:-1]]" << std::endl
+      os << "\t\tx = np.array([float(v) for v in pipe.readline().split()])" << std::endl
+	 << "\t\ty = np.array([float(v) for v in pipe.readline().split()])" << std::endl
+	 << "\t\tcols = [[float(v) for v in l.split()] for l in pipe.readline().split(',')[:-1]]" << std::endl
 	 << "\t\ttry:" << std::endl
 	 << "\t\t\tif palette" << suffix << " != None : palette" << suffix << ".remove()" << std::endl
 	 << "\t\t\tif ax" << parent_suffix << "_corners == None:" << std::endl
@@ -428,9 +437,9 @@ namespace ccmpl {
     inline void get_confetti(std::ostream& os, const std::string& suffix,
 			     const std::string& args) {
       start_data(os);
-      os << "\t\tx = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl
-	 << "\t\ty = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl
-	 << "\t\tcols = [[float(v) for v in l.split()] for l in sys.stdin.readline().split(',')[:-1]]" << std::endl
+      os << "\t\tx = np.array([float(v) for v in pipe.readline().split()])" << std::endl
+	 << "\t\ty = np.array([float(v) for v in pipe.readline().split()])" << std::endl
+	 << "\t\tcols = [[float(v) for v in l.split()] for l in pipe.readline().split(',')[:-1]]" << std::endl
 	 << "\t\tif confetti" << suffix << " != None : confetti" << suffix << ".remove()" << std::endl
 	 << "\t\tconfetti" << suffix << " = ax" << suffix << ".scatter(x,y,c=cols" << add_args(args) << ')' << std::endl;
       end_data(os);
@@ -446,9 +455,9 @@ namespace ccmpl {
 			    const std::string& suffix,
 			    const std::string& args) {
       start_data(os);
-      os << "\t\tbar_width   = float(sys.stdin.readline())" << std::endl
-	 << "\t\tbar_centers = [float(v) for v in sys.stdin.readline().split()]" << std::endl
-	 << "\t\tbar_heights = [float(v) for v in sys.stdin.readline().split()]" << std::endl
+      os << "\t\tbar_width   = float(pipe.readline())" << std::endl
+	 << "\t\tbar_centers = [float(v) for v in pipe.readline().split()]" << std::endl
+	 << "\t\tbar_heights = [float(v) for v in pipe.readline().split()]" << std::endl
 	 << "\t\tif histo1d" << suffix << " != None : histo1d" << suffix << ".remove()" << std::endl
 	 << "\t\thisto1d" << suffix << " = ax" << suffix << ".bar(bar_centers, bar_heights, bar_width, align='center'" << add_args(args) << ")" << std::endl;
       end_data(os);
@@ -498,7 +507,7 @@ namespace ccmpl {
       start_data(os);
       os <<"\t\tif(histo3d" << suffix << " != None):" << std::endl;
       os <<"\t\t\thisto3d" << suffix <<".remove()" << std::endl;
-      os << "\t\tdz = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl;
+      os << "\t\tdz = np.array([float(v) for v in pipe.readline().split()])" << std::endl;
 	
       os << "\t\tax" << suffix 
 	 << ".bar3d"
@@ -554,7 +563,7 @@ namespace ccmpl {
       start_data(os);
       os <<"\t\tif(histo2d" << suffix << " != None):" << std::endl;
       os <<"\t\t\thisto2d" << suffix <<".remove()" << std::endl;
-      os << "\t\tz = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl;
+      os << "\t\tz = np.array([float(v) for v in pipe.readline().split()])" << std::endl;
       // os << "\t\tzsum = z.sum()" << std::endl;
       // os << "\t\tif(zsum != 0):" << std::endl;
       // os << "\t\t\tz /= zsum" << std::endl;
@@ -577,10 +586,10 @@ namespace ccmpl {
     inline void get_vectors(std::ostream& os, const std::string& suffix,
 			    const std::string& args) {
       start_data(os);
-      os << "\t\tx = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl
-	 << "\t\ty = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl
-	 << "\t\tu = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl
-	 << "\t\tv = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl
+      os << "\t\tx = np.array([float(v) for v in pipe.readline().split()])" << std::endl
+	 << "\t\ty = np.array([float(v) for v in pipe.readline().split()])" << std::endl
+	 << "\t\tu = np.array([float(v) for v in pipe.readline().split()])" << std::endl
+	 << "\t\tv = np.array([float(v) for v in pipe.readline().split()])" << std::endl
 	 << "\t\tif vectors" << suffix << " != None : vectors" << suffix << ".remove()" << std::endl
 	 << "\t\tvectors" << suffix << " = ax" << suffix << ".quiver(x,y,u,v" << add_args(args) << ')' << std::endl;
       end_data(os);
@@ -594,7 +603,7 @@ namespace ccmpl {
       
     inline void get_vbar(std::ostream& os, const std::string& suffix) {
       start_data(os);
-      os << "\t\tx = float(sys.stdin.readline())" << std::endl
+      os << "\t\tx = float(pipe.readline())" << std::endl
 	 << "\t\tymin, ymax = ax" << parent_suffix(suffix) << ".get_ylim()" << std::endl
 	 << "\t\tvbar" << suffix << ".set_data([x,x],[ymin,ymax])" << std::endl;
       end_data(os);
@@ -608,7 +617,7 @@ namespace ccmpl {
       
     inline void get_hbar(std::ostream& os, const std::string& suffix) {
       start_data(os);
-      os << "\t\ty = float(sys.stdin.readline())" << std::endl
+      os << "\t\ty = float(pipe.readline())" << std::endl
 	 << "\t\txmin, xmax = ax" << parent_suffix(suffix) << ".get_xlim()" << std::endl
 	 << "\t\thbar" << suffix << ".set_data([xmin,xmax],[y,y])" << std::endl;
       end_data(os);
@@ -625,7 +634,7 @@ namespace ccmpl {
       start_data(os);
       os << "\t\tfor p in patches" << suffix << ':' << std::endl
 	 << "\t\t\tp.remove()" << std::endl
-	 << "\t\tcommand = sys.stdin.readline()" << std::endl
+	 << "\t\tcommand = pipe.readline()" << std::endl
 	 << "\t\tax = ax" << suffix << std::endl
 	 << "\t\texec(command) # allocates patches in ax, stored in tmp." << std::endl
 	 << "\t\tpatches" << suffix << " = tmp" << std::endl
@@ -647,10 +656,10 @@ namespace ccmpl {
     inline void get_image(std::ostream& os,
 			  const std::string& suffix) {
       start_data(os);
-      os << "\t\tx = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl;
-      os << "\t\ty = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl;
-      os << "\t\trawz = [float(v) for v in sys.stdin.readline().split()]" << std::endl;
-      os << "\t\twidth, depth = [int(v) for v in sys.stdin.readline().split()]" << std::endl;
+      os << "\t\tx = np.array([float(v) for v in pipe.readline().split()])" << std::endl;
+      os << "\t\ty = np.array([float(v) for v in pipe.readline().split()])" << std::endl;
+      os << "\t\trawz = [float(v) for v in pipe.readline().split()]" << std::endl;
+      os << "\t\twidth, depth = [int(v) for v in pipe.readline().split()]" << std::endl;
       os << "\t\tim = np.array(rawz).reshape((len(rawz)//(width*depth), width, depth))" << std::endl;
       os << "\t\taxim" << suffix << ".set_data(x, y, im)" << std::endl;
       os << "\t\taxim" << suffix << ".set_extent((x.min(), x.max(), y.min(), y.max()))" << std::endl;
@@ -671,15 +680,15 @@ namespace ccmpl {
 			     const std::string& args,
 			     unsigned int fontsize) {
       start_data(os);
-      os << "\t\t(xmin,xmax,nb_x) = [float(v) for v in sys.stdin.readline().split()]" << std::endl;
-      os << "\t\t(ymin,ymax,nb_y) = [float(v) for v in sys.stdin.readline().split()]" << std::endl;
-      os << "\t\tV                = np.array([float(v) for v in sys.stdin.readline().split()])" << std::endl;
+      os << "\t\t(xmin,xmax,nb_x) = [float(v) for v in pipe.readline().split()]" << std::endl;
+      os << "\t\t(ymin,ymax,nb_y) = [float(v) for v in pipe.readline().split()]" << std::endl;
+      os << "\t\tV                = np.array([float(v) for v in pipe.readline().split()])" << std::endl;
       os << "\t\tstep = (xmax-xmin)/(nb_x-1)" << std::endl;
       os << "\t\tx    = np.arange(xmin, xmax+.5*step,step)" << std::endl;
       os << "\t\tstep = (ymax-ymin)/(nb_y-1)" << std::endl;
       os << "\t\ty    = np.arange(ymin, ymax+.5*step,step)" << std::endl;
       os << "\t\tX, Y = np.meshgrid(x, y)" << std::endl;
-      os << "\t\tZ = np.array([float(v) for v in sys.stdin.readline().split()]).reshape(int(nb_y),int(nb_x))" << std::endl;
+      os << "\t\tZ = np.array([float(v) for v in pipe.readline().split()]).reshape(int(nb_y),int(nb_x))" << std::endl;
       os << "\t\tax" << suffix << ".set_xlim((xmin,xmax))" << std::endl;
       os << "\t\tax" << suffix << ".set_ylim((ymin,ymax))" << std::endl;
       os << "\t\tif contours" << suffix << " != None : " << std::endl;
@@ -702,8 +711,8 @@ namespace ccmpl {
       
     inline void get_text(std::ostream& os, const std::string& suffix) {
       start_data(os);
-      os << "\t\txy = [float(v) for v in sys.stdin.readline().split()]" << std::endl
-	 << "\t\ttext = sys.stdin.readline().split()[0]" << std::endl
+      os << "\t\txy = [float(v) for v in pipe.readline().split()]" << std::endl
+	 << "\t\ttext = pipe.readline().split()[0]" << std::endl
 	 << "\t\ttext" << suffix << ".set_position(xy)" << std::endl
 	 << "\t\ttext" << suffix << ".set_text(text)" << std::endl;
       end_data(os);
