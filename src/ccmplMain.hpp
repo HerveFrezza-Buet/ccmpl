@@ -32,7 +32,6 @@ namespace ccmpl {
 		  << argv[0] << " display" << std::endl
 		  << "-----------------" << std::endl
 		  << argv[0] << " run | python3 ./" << pyfile << std::endl
-		  << argv[0] << " run & python3 ./" << pyfile << " pipe_path  <-- if " << argv[0] << " outputs data in pipepath" << std::endl
 		  << std::endl;
 	std::exit(0);
       }
