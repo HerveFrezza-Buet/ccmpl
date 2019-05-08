@@ -70,9 +70,10 @@ int main(int argc, char* argv[]) {
 
   // Let us define the layout, a 3x2 grid here. Args are width, height
   // and the grid structure. Only 5 charts will be inserted in the grid.
-  auto display = ccmpl::layout(8.0, 4.0, {  "###"  ,
+  auto display = ccmpl::layout(m.hostname, m.port,
+			       8.0, 4.0, {  "###"  ,
 	                                    ".##"  }, 
-    ccmpl::RGB(1., 1., 1.));                          // Set background to white
+			       ccmpl::RGB(1., 1., 1.));  // Set background to white
   display.set_ratios({1.,2.,1.}, {1.,1.});
 
   // Let us define our charts (3 here, with 1, 2 and 1 data elements respectively)
@@ -107,9 +108,9 @@ int main(int argc, char* argv[]) {
   // Execution
   
   current_time = 0;
-  std::cout << display("######", ccmpl::nofile(), ccmpl::nofile());   // The 6 data elements are updated.
+  display("######", ccmpl::nofile(), ccmpl::nofile());   // The 6 data elements are updated.
   for(++current_time; true ; ++current_time)
-    std::cout << display(".#####", ccmpl::nofile(), ccmpl::nofile()); // The data element #1 is not updated since it do not depend on time.
+    display(".#####", ccmpl::nofile(), ccmpl::nofile()); // The data element #1 is not updated since it do not depend on time.
 
   return 0;	 
 }

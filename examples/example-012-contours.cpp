@@ -62,7 +62,8 @@ int main(int argc, char* argv[]) {
 
   // Let us define the layout, a 1x1 grid here. Args are width, height
   // and the grid structure.
-  auto display = ccmpl::layout(8.0, 6.0, {"#"});
+  auto display = ccmpl::layout(m.hostname, m.port,
+			       8.0, 6.0, {"#"});
   display.set_ratios({4.}, {3.});
 
   display().title   = "Contours  ";  
@@ -74,8 +75,8 @@ int main(int argc, char* argv[]) {
   m.generate(display, false); // no gui, we only generate a single pdf
 
   // Execution
-  std::cout << display("#", "ccmpl-012.pdf", ccmpl::nofile())
-	    << ccmpl::stop;
+  display("#", "ccmpl-012.pdf", ccmpl::nofile());
+  !display;
   
   return 0;	 
 }

@@ -69,7 +69,8 @@ int main(int argc, char* argv[]) {
 
   // Let us define the layout, a 1x1 grid here. Args are width, height
   // and the grid structure.
-  auto display = ccmpl::layout(8.0, 4.0, {"#"});
+  auto display = ccmpl::layout(m.hostname, m.port,
+			       8.0, 4.0, {"#"});
   display.set_ratios({1.}, {1.});
 
   // Let us define our charts (1 here)
@@ -85,11 +86,11 @@ int main(int argc, char* argv[]) {
   // ccmpl::filename("img",i,"png") helps to define "img-%06d.png" names. Use ccmpl::nofile() if no image files are needed.
 
   for(current_time = 0; current_time < 10000; ++current_time)
-    std::cout << display("#", // Use # or - for each data element for trigerring its update.
-			 ccmpl::nofile(),  // name of the generated pdf file
-			 ccmpl::nofile()); // name of the generated png file. 
-
-  std::cout << ccmpl::stop;
+    display("#", // Use # or - for each data element for trigerring its update.
+	    ccmpl::nofile(),  // name of the generated pdf file
+	    ccmpl::nofile()); // name of the generated png file. 
+  
+  !display;
    
   return 0;	 
 }

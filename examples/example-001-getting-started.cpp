@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
 
   // ccmpl::filename("img",i,"png") helps to define "img-%06d.png" names. Use ccmpl::nofile() if no image files are needed.
 
-  for(current_time = 0; current_time < 100; ++current_time)
+  for(current_time = 0; current_time < 1000; ++current_time)
     display("##",             // Use # or - for each data element for trigerring its update.
 	    ccmpl::nofile(),  // name of the generated pdf file
 	    ccmpl::nofile()); // name of the generated png file. 
