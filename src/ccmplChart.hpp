@@ -34,6 +34,11 @@
 #include <sstream>
 #include <utility>
 #include <initializer_list>
+#include <string>
+#include <stdexcept>
+
+#include <boost/asio.hpp>
+
 
 #include <ccmplPython.hpp>
 
@@ -470,6 +475,7 @@ namespace ccmpl {
     
     class Layout : public Elements {
     private:
+      boost::asio::ip::tcp::iostream tcp_stream;
       unsigned int width,height;
       double xsize, ysize;
       ccmpl::RGB facecolor;
@@ -478,35 +484,38 @@ namespace ccmpl {
       std::string pdf_name, png_name;
       int png_dpi;
       std::list<double> wratios, hratios;
-
       
     public:
       
-      Layout(const Layout& other)
-	: width(other.width), height(other.height),
-	  xsize(other.xsize), ysize(other.ysize),
-	  facecolor(other.facecolor),
-	  graphs(), current(),
-	  pdf_name(other.pdf_name), 
-	  png_name(other.png_name),
-	  png_dpi(other.png_dpi),
-	  wratios(other.wratios), hratios(other.hratios) {
-	auto out = std::back_inserter(graphs);
-	for(auto g_ptr: graphs)
-	  *(out++) = reinterpret_cast<Graph*>(g_ptr->clone());
-	current = graphs.begin();
-      }
+      // Layout(const Layout& other)
+      // 	: width(other.width), height(other.height),
+      // 	  xsize(other.xsize), ysize(other.ysize),
+      // 	  facecolor(other.facecolor),
+      // 	  graphs(), current(),
+      // 	  pdf_name(other.pdf_name), 
+      // 	  png_name(other.png_name),
+      // 	  png_dpi(other.png_dpi),
+      // 	  wratios(other.wratios), hratios(other.hratios) {
+      // 	auto out = std::back_inserter(graphs);
+      // 	for(auto g_ptr: graphs)
+      // 	  *(out++) = reinterpret_cast<Graph*>(g_ptr->clone());
+      // 	current = graphs.begin();
+      // }
       
+      Layout(const Layout& other)      = delete;
       Layout& operator=(const Layout&) = delete;
 
 
+      Layout(std::string hostname, int port, double sx, double sy,const std::initializer_list<const char*>& placeholders, ccmpl::RGB fc=ccmpl::RGB(.75, .75, .75))
+	: Layout(hostname, std::to_string(port), sx, sy, placeholders, fc) {}
+	
       /**
        * layout can contain '.' (no graph), '#' (some graph here), '>' (colspan = 2), 'V' (linespan = 2), 'X' (2x2 span).
        *
        */
-
-      Layout(double sx, double sy,const std::initializer_list<const char*>& placeholders, ccmpl::RGB fc=ccmpl::RGB(.75, .75, .75))
-	: xsize(sx), ysize(sy), facecolor(fc) {
+      Layout(std::string hostname, std::string port, double sx, double sy,const std::initializer_list<const char*>& placeholders, ccmpl::RGB fc=ccmpl::RGB(.75, .75, .75))
+	: tcp_stream(hostname, port),
+	  xsize(sx), ysize(sy), facecolor(fc) {
 	
 	height = placeholders.size();
 	unsigned int lineid = 0;
@@ -575,27 +584,45 @@ namespace ccmpl {
 	return *(*current);
       }
 
-      Layout& operator()(const std::string& s,
-			 const std::string& pdf,
-			 const std::string& png) {
-	auto it = s.begin();
-	update_activity(it);
-	pdf_name = pdf;
-	png_name = png;
-	png_dpi = 0;
-	return *this;
+      /**
+       * This sends data for remote display.
+       */
+      void operator()(const std::string& s,
+		      const std::string& pdf,
+		      const std::string& png) {
+	(*this)(s, pdf, std::make_pair(png, 0));
       }
 
-      Layout& operator()(const std::string& s,
-			 const std::string& pdf,
-			 const std::pair<std::string, int>& png_data) {
+      /**
+       * This sends data for remote display.
+       */
+      void operator()(const std::string& s,
+		      const std::string& pdf,
+		      const std::pair<std::string, int>& png_data) {
+	char c;
 	auto it = s.begin();
 	update_activity(it);
 	pdf_name = pdf;
 	png_name = png_data.first;
 	png_dpi = png_data.second;
-	return *this;
+	if(tcp_stream) {
+	  print_data(tcp_stream);
+	  tcp_stream.get(c); // Acknowledgement from server.
+	}
+	
+	else
+	  throw std::runtime_error("Not connected to display server");
       }
+
+      /**
+       * This sends an ending notification to remote display.
+       */
+      void operator!() {
+	tcp_stream << "end" << std::endl;
+	tcp_stream.close();
+      }
+
+      
 
 
       void set_ratios(const std::initializer_list<double>& width_ratios, 
@@ -659,26 +686,19 @@ namespace ccmpl {
 	file.close();
       }
     };
-
-    inline std::ostream& operator<<(std::ostream& os, Layout& l) {
-      l.print_data(os);
-      return os;
-    }
   }
     
   // To keep the default facecolor in the Layout class, we define two functions for the creation of Layout
-  inline chart::Layout layout(double xsize, double ysize,
+  inline chart::Layout layout(const std::string& hostname, int port,
+			      double xsize, double ysize,
 			      const std::initializer_list<const char*>& placeholders) {
-    return chart::Layout(xsize, ysize, placeholders);
+    return chart::Layout(hostname, port, xsize, ysize, placeholders);
   }
-  inline chart::Layout layout(double xsize, double ysize,
+  inline chart::Layout layout(const std::string& hostname, int port,
+			      double xsize, double ysize,
 			      const std::initializer_list<const char*>& placeholders, 
 			      ccmpl::RGB facecolor) {
-    return chart::Layout(xsize, ysize, placeholders, facecolor);
+    return chart::Layout(hostname, port, xsize, ysize, placeholders, facecolor);
   }
 
-  inline std::ostream& stop(std::ostream& os) {
-    os << "end" << std::endl;
-    return os;
-  }
 }
