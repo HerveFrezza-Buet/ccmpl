@@ -70,15 +70,18 @@ namespace ccmpl {
 	 << "from matplotlib import cm" << std::endl
 	 << "import matplotlib.animation as manimation" << std::endl
 	 << "import sys" << std::endl
+	 << "import socket" << std::endl
 	 << std::endl
-	 << "pipe = sys.stdin" << std::endl
-	 << "if len(sys.argv) == 2:" << std::endl
-	 << "\tpipename = sys.argv[1]" << std::endl
-	 << "\ttry:" << std::endl
-	 << "\t\tpipe = open(pipename, 'r')" << std::endl
-	 << "\texcept:" << std::endl
-	 << "\t\tprint('cannot open pipe {}. Aborting.'.format(pipename))" << std::endl
-	 << "\t\tsys.exit(1)" << std::endl
+	 << "if len(sys.argv) != 2 :" << std::endl
+	 << "\tprint('Usage : {} <port>'.format(sys.argv[0]))" << std::endl
+	 << "port = int(sys.argv[1])" << std::endl
+	 << std::endl
+	 << "server_address = ('localhost', port)" << std::endl
+	 << "sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)" << std::endl
+	 << "sock.bind(server_address)" << std::endl
+	 << "sock.listen(1)" << std::endl
+	 << "connection, client_address = sock.accept()" << std::endl
+	 << "pipe = connection.makefile()" << std::endl
 	 << std::endl;
     }
       
@@ -169,7 +172,8 @@ namespace ccmpl {
 	 << "\tfig.canvas.draw()" << std::endl;
       if(movie)
 	os << "\twriter.grab_frame()" << std::endl;
-      os << "\tcont = pipe.readline().split()[0]=='cont'" << std::endl;
+      os << "\tconnection.send(b'!') # send acknowledgment back." << std::endl
+	 << "\tcont = pipe.readline().split()[0]=='cont'" << std::endl;
     }
       
     inline void start_data(std::ostream& os) {

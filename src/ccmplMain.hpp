@@ -15,6 +15,9 @@ namespace ccmpl {
 	movie_writer("ffmpeg") {}
 
   public:
+    
+    std::string hostname;
+    int port;
 
     Main           (            )  = delete;
     Main           (const Main& )  = delete;
@@ -24,19 +27,24 @@ namespace ccmpl {
 
     Main(int argc, char** argv, const std::string& prefix)
       : Main(prefix) {
-      if(argc != 2) {
+      if(argc != 2 && argc != 3) {
 	std::cerr << std::endl
 		  << "Usage : " << std::endl
 		  << std::endl
 		  << argv[0] << " movie" << std::endl
 		  << argv[0] << " display" << std::endl
 		  << "-----------------" << std::endl
-		  << argv[0] << " run | python3 ./" << pyfile << std::endl
+		  << "python3 ./" << pyfile << " <port>      <-- run on machine <hostname>" << std::endl
+		  << argv[0] << " <hostname> <port>" << std::endl
 		  << std::endl;
 	std::exit(0);
       }
-      generate_mode = std::string(argv[1])=="movie" || std::string(argv[1])=="display";
-      movie         = std::string(argv[1])=="movie";
+      generate_mode = (argc == 2) && (std::string(argv[1])=="movie" || std::string(argv[1])=="display");
+      movie         = generate_mode && std::string(argv[1])=="movie";
+      if(argc == 3) {
+	hostname = argv[1];
+	port     = std::stoi(argv[2]);
+      }
     }
 
     Main(bool generate_mode, bool movie, const std::string& prefix)

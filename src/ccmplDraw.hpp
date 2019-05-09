@@ -1122,8 +1122,8 @@ namespace ccmpl {
     }
 
     virtual void _print_data(std::ostream& os) {
-      std::cout << xmin << ' ' << xmax << ' ' << nb_x << std::endl;
-      std::cout << ymin << ' ' << ymax << ' ' << nb_y << std::endl;
+      os << xmin << ' ' << xmax << ' ' << nb_x << std::endl
+	 << ymin << ' ' << ymax << ' ' << nb_y << std::endl;
       for(auto v : ccmpl::range(zmin,zmax,nb_z)) os << ' ' << v;
       os << std::endl;
       for(auto zi : z) os << ' ' << zi;

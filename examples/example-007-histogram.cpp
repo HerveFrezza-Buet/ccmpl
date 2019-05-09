@@ -47,7 +47,8 @@ int main(int argc, char* argv[]) {
   std::mt19937       gen(rd());
   
 
-  auto display = ccmpl::layout(12.0, 12.0, {"##", ">."});
+  auto display = ccmpl::layout(m.hostname, m.port,
+			       12.0, 12.0, {"##", ">."});
 
   std::string histo2d_args = std::string("cmap='jet', vmin=")
     + std::to_string(Z_MIN)
@@ -83,7 +84,8 @@ int main(int argc, char* argv[]) {
 
   // Execution
   
-  std::cout << display("###", "ccmpl-007.pdf", ccmpl::nofile())
-	    << ccmpl::stop;
+  display("###", "ccmpl-007.pdf", ccmpl::nofile());
+  !display;
+  
   return 0;	 
 }

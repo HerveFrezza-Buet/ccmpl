@@ -27,7 +27,8 @@ int main(int argc, char* argv[]) {
 
   // Let us define the layout, a 1x2 grid here. Args are width, height
   // the grid structure and, optionnaly, the background color of the figure
-  auto display = ccmpl::layout(8.0, 8.0,
+  auto display = ccmpl::layout(m.hostname, m.port,
+			       8.0, 8.0,
 			       {"#", "#"}, // Two stacked plots here (see next examples).
 			       ccmpl::RGB(1., 1., 1.));
   display.set_ratios({2.}, {1., 1.});
@@ -57,11 +58,11 @@ int main(int argc, char* argv[]) {
   // ccmpl::filename("img",i,"png") helps to define "img-%06d.png" names. Use ccmpl::nofile() if no image files are needed.
 
   for(current_time = 0; current_time < 1000; ++current_time)
-    std::cout << display("##", // Use # or - for each data element for trigerring its update.
-			 ccmpl::nofile(),  // name of the generated pdf file
-			 ccmpl::nofile()); // name of the generated png file. 
-
-  std::cout << ccmpl::stop;
+    display("##",             // Use # or - for each data element for trigerring its update.
+	    ccmpl::nofile(),  // name of the generated pdf file
+	    ccmpl::nofile()); // name of the generated png file. 
+  
+  !display; // This stops the remote display.
    
   return 0;	 
 }

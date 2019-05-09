@@ -3,7 +3,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.8.4 )
 
 project (ccmpl)
 
-SET(PACKAGE_VERSION "1.25")
+SET(PACKAGE_VERSION "2.00")
 SET(PACKAGE_LICENSE "GPL")
 
 SET(CMAKE_BUILD_TYPE Release)
@@ -25,7 +25,7 @@ SET(PROJECT_CFLAGS "-Wall -std=c++17")
 SET(PROJECT_LIBS "-Wl,--no-as-needed ")
 
 # ldflags required, but not provided by pkg-config
-SET(PROJECT_LDFLAGS "")
+SET(PROJECT_LDFLAGS "-lboost_system -lboost_thread -lpthread")
 
 # Gathering of all flags
 # (e.g. for compiling examples)

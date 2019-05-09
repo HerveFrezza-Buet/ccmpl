@@ -49,7 +49,8 @@ int main(int argc, char* argv[]) {
   ccmpl::Main m(argc,argv,VIEW_PREFIX);
 
   std::string update_pattern = "";
-  auto display = ccmpl::layout(8.0, 4.0, {"##"});
+  auto display = ccmpl::layout(m.hostname, m.port,
+			       8.0, 4.0, {"##"});
 
   display().title   = "Surface";
   display()         = ccmpl::view2d({-1.1, 1.1}, {-1.1, 1.1}, ccmpl::aspect::equal, ccmpl::span::placeholder);
@@ -66,7 +67,7 @@ int main(int argc, char* argv[]) {
   
   // Execution
   
-  std::cout << display(update_pattern, "ccmpl-006.pdf", ccmpl::nofile())
-	    << ccmpl::stop;
+  display(update_pattern, "ccmpl-006.pdf", ccmpl::nofile());
+  !display;
   return 0;	 
 }

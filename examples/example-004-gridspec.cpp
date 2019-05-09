@@ -49,7 +49,8 @@ int main(int argc, char* argv[]) {
   //    'V' --> the graph is extended to the slot on the bottom.
   //    'X' --> both '>' and 'V'.
 
-  auto display = ccmpl::layout(8.0, 4.0, {  "X.."  ,
+  auto display = ccmpl::layout(m.hostname, m.port,
+			       8.0, 4.0, {  "X.."  ,
 	                                    "..V"  ,
 	                                    ">.."  });
 
@@ -74,9 +75,9 @@ int main(int argc, char* argv[]) {
   // Execution
   
   current_time = 0;
-  std::cout << display("####", ccmpl::nofile(), ccmpl::nofile());   // The 4 data elements are updated.
+  display("####", ccmpl::nofile(), ccmpl::nofile());   // The 4 data elements are updated.
   for(++current_time; true ; ++current_time)
-    std::cout << display(".###", ccmpl::nofile(), ccmpl::nofile()); // The data element #1 is not updated.
+    display(".###", ccmpl::nofile(), ccmpl::nofile()); // The data element #1 is not updated.
 
   return 0;	 
 }
