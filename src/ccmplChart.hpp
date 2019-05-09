@@ -36,6 +36,7 @@
 #include <initializer_list>
 #include <string>
 #include <stdexcept>
+#include <memory>
 
 #include <boost/asio.hpp>
 
@@ -475,7 +476,7 @@ namespace ccmpl {
     
     class Layout : public Elements {
     private:
-      boost::asio::ip::tcp::iostream tcp_stream;
+      std::shared_ptr<boost::asio::ip::tcp::iostream> tcp_stream_ptr;
       unsigned int width,height;
       double xsize, ysize;
       ccmpl::RGB facecolor;
@@ -502,19 +503,19 @@ namespace ccmpl {
       // 	current = graphs.begin();
       // }
       
-      Layout(const Layout& other)      = delete;
+      Layout(const Layout& other)      = default;
       Layout& operator=(const Layout&) = delete;
 
 
-      Layout(std::string hostname, int port, double sx, double sy,const std::initializer_list<const char*>& placeholders, ccmpl::RGB fc=ccmpl::RGB(.75, .75, .75))
+      Layout(std::string hostname, int port, double sx, double sy, const std::initializer_list<const char*>& placeholders, ccmpl::RGB fc=ccmpl::RGB(.75, .75, .75))
 	: Layout(hostname, std::to_string(port), sx, sy, placeholders, fc) {}
 	
       /**
        * layout can contain '.' (no graph), '#' (some graph here), '>' (colspan = 2), 'V' (linespan = 2), 'X' (2x2 span).
        *
        */
-      Layout(std::string hostname, std::string port, double sx, double sy,const std::initializer_list<const char*>& placeholders, ccmpl::RGB fc=ccmpl::RGB(.75, .75, .75))
-	: tcp_stream(hostname, port),
+      Layout(std::string hostname, std::string port, double sx, double sy, const std::initializer_list<const char*>& placeholders, ccmpl::RGB fc=ccmpl::RGB(.75, .75, .75))
+	: tcp_stream_ptr(std::make_shared<boost::asio::ip::tcp::iostream>(hostname, port)),
 	  xsize(sx), ysize(sy), facecolor(fc) {
 	
 	height = placeholders.size();
@@ -605,11 +606,10 @@ namespace ccmpl {
 	pdf_name = pdf;
 	png_name = png_data.first;
 	png_dpi = png_data.second;
-	if(tcp_stream) {
-	  print_data(tcp_stream);
-	  tcp_stream.get(c); // Acknowledgement from server.
+	if(*tcp_stream_ptr) {
+	  print_data(*tcp_stream_ptr);
+	  tcp_stream_ptr->get(c); // Acknowledgement from server.
 	}
-	
 	else
 	  throw std::runtime_error("Not connected to display server");
       }
@@ -618,8 +618,8 @@ namespace ccmpl {
        * This sends an ending notification to remote display.
        */
       void operator!() {
-	tcp_stream << "end" << std::endl;
-	tcp_stream.close();
+	*tcp_stream_ptr << "end" << std::endl;
+	tcp_stream_ptr->close();
       }
 
       
@@ -694,6 +694,7 @@ namespace ccmpl {
 			      const std::initializer_list<const char*>& placeholders) {
     return chart::Layout(hostname, port, xsize, ysize, placeholders);
   }
+  
   inline chart::Layout layout(const std::string& hostname, int port,
 			      double xsize, double ysize,
 			      const std::initializer_list<const char*>& placeholders, 
