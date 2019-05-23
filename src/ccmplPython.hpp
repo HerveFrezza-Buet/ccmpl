@@ -36,14 +36,14 @@
 namespace ccmpl {
   namespace python {
     
-    std::string add_args(const std::string& args) {
+    inline std::string add_args(const std::string& args) {
       if(args != "")
 	return std::string(", ")+args;
       else
 	return args;
     }
 
-    std::string parent_suffix(const std::string& suffix) {
+    inline std::string parent_suffix(const std::string& suffix) {
       unsigned int j=0;
       unsigned int i=suffix.size();
       for(auto c : suffix) {
@@ -185,25 +185,25 @@ namespace ccmpl {
     }
 
     template<typename PRINT_AXIS2D, typename PRINT_AXIS3D>
-    inline void open_graph(std::ostream& os,
-			   const std::string& suffix,
-			   const PRINT_AXIS2D& p2d,
-			   const PRINT_AXIS3D& p3d,
-			   const std::string& title,
-			   const std::string& xtitle,
-			   const std::string& ytitle,
-			   const std::string& ztitle,
-			   bool show_xtics,
-			   bool show_ytics,
-			   bool show_ztics,
-			   const std::string& xticks_position,
-			   const std::string& yticks_position,
-			   const std::string& grid_info,
-			   bool show_axis,
-			   bool use_x_offset,
-			   bool use_x_scientific,
-			   const std::string& grid_pos,
-			   bool is_3d) {
+    void open_graph(std::ostream& os,
+		    const std::string& suffix,
+		    const PRINT_AXIS2D& p2d,
+		    const PRINT_AXIS3D& p3d,
+		    const std::string& title,
+		    const std::string& xtitle,
+		    const std::string& ytitle,
+		    const std::string& ztitle,
+		    bool show_xtics,
+		    bool show_ytics,
+		    bool show_ztics,
+		    const std::string& xticks_position,
+		    const std::string& yticks_position,
+		    const std::string& grid_info,
+		    bool show_axis,
+		    bool use_x_offset,
+		    bool use_x_scientific,
+		    const std::string& grid_pos,
+		    bool is_3d) {
 	
       os << "ax = plt.subplot(gs["<< grid_pos << "]";
       if(is_3d)

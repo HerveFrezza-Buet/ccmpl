@@ -79,8 +79,8 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Dot dot(const std::string& arglist,
-		 const FILL& f) {
+  Dot dot(const std::string& arglist,
+	  const FILL& f) {
     return Dot(arglist,f);
   }
 
@@ -127,8 +127,8 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Vbar vbar(const std::string& arglist,
-		   const FILL& f) {
+  Vbar vbar(const std::string& arglist,
+	    const FILL& f) {
     return Vbar(arglist,f);
   }
 
@@ -173,8 +173,8 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Hbar hbar(const std::string& arglist,
-		   const FILL& f) {
+  Hbar hbar(const std::string& arglist,
+	    const FILL& f) {
     return Hbar(arglist,f);
   }
 
@@ -225,7 +225,7 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Dots dots(const std::string& arglist, const FILL& f) {
+  Dots dots(const std::string& arglist, const FILL& f) {
     return Dots(arglist,f);
   }
 
@@ -244,7 +244,7 @@ namespace ccmpl {
       
     template<typename FILL>
     Between(const std::string& arglist,
-	 const FILL& f) : chart::Data(arglist), fill(f) {}
+	    const FILL& f) : chart::Data(arglist), fill(f) {}
     virtual ~Between() {}
       
     virtual chart::Element* clone() const {
@@ -281,7 +281,7 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Between between(const std::string& arglist,const FILL& f) {
+  Between between(const std::string& arglist,const FILL& f) {
     return Between(arglist,f);
   }
 
@@ -309,7 +309,7 @@ namespace ccmpl {
       
     template<typename FILL>
     Pie(const std::string& arglist,
-	 const FILL& f) : chart::Data(arglist), fill(f) {}
+	const FILL& f) : chart::Data(arglist), fill(f) {}
     virtual ~Pie() {}
       
     virtual chart::Element* clone() const {
@@ -351,7 +351,7 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Pie pie(const std::string& arglist,const FILL& f) {
+  Pie pie(const std::string& arglist,const FILL& f) {
     return Pie(arglist,f);
   }
 
@@ -405,7 +405,7 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Line line(const std::string& arglist,const FILL& f) {
+  Line line(const std::string& arglist,const FILL& f) {
     return Line(arglist,f);
   }
 
@@ -423,7 +423,7 @@ namespace ccmpl {
       
     template<typename FILL>
     Lines(const std::string& arglist,
-	 const FILL& f) : chart::Data(arglist), fill(f) {}
+	  const FILL& f) : chart::Data(arglist), fill(f) {}
     virtual ~Lines() {}
       
     virtual chart::Element* clone() const {
@@ -460,7 +460,7 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Lines lines(const std::string& arglist,const FILL& f) {
+  Lines lines(const std::string& arglist,const FILL& f) {
     return Lines(arglist,f);
   }
 
@@ -481,7 +481,7 @@ namespace ccmpl {
     Vectors(const std::string& arglist,
 	    const FILL& f) 
       : chart::Data(arglist), 
-	fill(f) {}
+      fill(f) {}
     virtual ~Vectors() {}
       
     virtual void refill() {
@@ -520,8 +520,8 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Vectors vectors(const std::string& arglist,
-			 const FILL& f) {
+  Vectors vectors(const std::string& arglist,
+		  const FILL& f) {
     return Vectors(arglist,f);
   }
 
@@ -546,9 +546,9 @@ namespace ccmpl {
 	    double max_value,
 	    const FILL& f) 
       : chart::Data(arglist), 
-	min(min_value),
-	max(max_value),
-	fill(f) {}
+      min(min_value),
+      max(max_value),
+      fill(f) {}
     virtual ~Surface() {}
       
     virtual void refill() {
@@ -584,10 +584,10 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Surface surface(const std::string& arglist,
-			 double min_value,
-			 double max_value,
-			 const FILL& f) {
+  Surface surface(const std::string& arglist,
+		  double min_value,
+		  double max_value,
+		  const FILL& f) {
     return Surface(arglist,min_value,max_value,f);
   }
 
@@ -642,7 +642,7 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Palette palette(const std::string& arglist, const FILL& f) {
+  Palette palette(const std::string& arglist, const FILL& f) {
     return Palette(arglist,f);
   }
 
@@ -698,7 +698,7 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Confetti confetti(const std::string& arglist, const FILL& f) {
+  Confetti confetti(const std::string& arglist, const FILL& f) {
     return Confetti(arglist,f);
   }
 
@@ -724,8 +724,8 @@ namespace ccmpl {
 	    const FILL& f,
 	    double min, double max, unsigned int nb_bins) 
       : chart::Data(arglist), fill(f),
-	data(),
-	min(min), max(max), nb(nb_bins){}
+      data(),
+      min(min), max(max), nb(nb_bins){}
     virtual ~Histo1d() {}
       
     virtual void _print_data(std::ostream& os) {
@@ -775,8 +775,8 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Histo1d histo1d(const std::string& arglist, const FILL& f,
-			 double min, double max, unsigned int nb_bins) {
+  Histo1d histo1d(const std::string& arglist, const FILL& f,
+		  double min, double max, unsigned int nb_bins) {
     return Histo1d(arglist,f,
 		   min,max,nb_bins);
   }
@@ -806,9 +806,9 @@ namespace ccmpl {
 	    double xmin, double xmax, unsigned int nb_xbins,
 	    double ymin, double ymax, unsigned int nb_ybins) 
       : chart::Data(arglist), fill(f),
-	data(),
-	x_min(xmin), x_max(xmax), nbx(nb_xbins),
-	y_min(ymin), y_max(ymax), nby(nb_ybins){}
+      data(),
+      x_min(xmin), x_max(xmax), nbx(nb_xbins),
+      y_min(ymin), y_max(ymax), nby(nb_ybins){}
     virtual ~Histo2d() {}
       
     virtual void _print_data(std::ostream& os) {
@@ -857,9 +857,9 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Histo2d histo2d(const std::string& arglist, const FILL& f,
-			 double xmin, double xmax, unsigned int nb_xbins,
-			 double ymin, double ymax, unsigned int nb_ybins) {
+  Histo2d histo2d(const std::string& arglist, const FILL& f,
+		  double xmin, double xmax, unsigned int nb_xbins,
+		  double ymin, double ymax, unsigned int nb_ybins) {
     return Histo2d(arglist,f,
 		   xmin,xmax,nb_xbins,
 		   ymin,ymax,nb_ybins);
@@ -888,9 +888,9 @@ namespace ccmpl {
 	    double xmin, double xmax, unsigned int nb_xbins,
 	    double ymin, double ymax, unsigned int nb_ybins) 
       : chart::Data(arglist), fill(f),
-	data(),
-	x_min(xmin), x_max(xmax), nbx(nb_xbins),
-	y_min(ymin), y_max(ymax), nby(nb_ybins){}
+      data(),
+      x_min(xmin), x_max(xmax), nbx(nb_xbins),
+      y_min(ymin), y_max(ymax), nby(nb_ybins){}
     virtual ~Histo3d() {}
       
     virtual void _print_data(std::ostream& os) {
@@ -937,9 +937,9 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Histo3d histo3d(const std::string& arglist, const FILL& f,
-			 double xmin, double xmax, unsigned int nb_xbins,
-			 double ymin, double ymax, unsigned int nb_ybins) {
+  Histo3d histo3d(const std::string& arglist, const FILL& f,
+		  double xmin, double xmax, unsigned int nb_xbins,
+		  double ymin, double ymax, unsigned int nb_ybins) {
     return Histo3d(arglist,f,
 		   xmin,xmax,nb_xbins,
 		   ymin,ymax,nb_ybins);
@@ -995,7 +995,7 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Patches patches(const FILL& f) {
+  Patches patches(const FILL& f) {
     return Patches(f);
   }
 
@@ -1060,7 +1060,7 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Image image(const std::string& arglist, const FILL& f) {
+  Image image(const std::string& arglist, const FILL& f) {
     return Image(arglist, f);
   }
 
@@ -1132,8 +1132,8 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Contours contours(const std::string& arglist, 
-	     unsigned int fontsize, const FILL& f) {
+  Contours contours(const std::string& arglist, 
+		    unsigned int fontsize, const FILL& f) {
     return Contours(arglist, fontsize, f);
   }
 
@@ -1179,7 +1179,7 @@ namespace ccmpl {
   };
 
   template<typename FILL>
-  inline Text text(const std::string& arglist,const FILL& f) {
+  Text text(const std::string& arglist,const FILL& f) {
     return Text(arglist,f);
   }  
 

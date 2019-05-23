@@ -34,13 +34,13 @@
 namespace ccmpl {
 
 
-  std::string filename(const std::string& prefix, unsigned int i, const std::string& suffix) {
+  inline std::string filename(const std::string& prefix, unsigned int i, const std::string& suffix) {
     std::ostringstream ostr;
     ostr << prefix << '-' << std::setw(6) << std::setfill('0') << i << '.' << suffix;
     return ostr.str();
   }
 
-  std::string nofile() {
+  inline std::string nofile() {
     return "";
   }
 
